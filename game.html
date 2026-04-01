@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Rota 3D</title>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+    window.RotaGLTFLoader = GLTFLoader;
+  </script>
   <style>
     :root {
       --c1: #2ed3ff;
@@ -291,7 +302,7 @@
     let modelLoadFailed = false;
     let cachedVanModel = null;
     let GLTFLoaderCtor = null;
-    let gltfLoaderInitTried = false;
+    let loaderRetryCount = 0;
 
     let audioCtx = null;
     let engineGain = null;
@@ -350,24 +361,12 @@
       window.addEventListener("keyup", onKeyUp);
 
       setupMobileControls();
-      loadGLTFLoaderModule();
+      syncGLTFLoaderCtor();
     }
 
-    async function loadGLTFLoaderModule() {
-      if (gltfLoaderInitTried) return;
-      gltfLoaderInitTried = true;
-
-      try {
-        const mod = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js");
-        GLTFLoaderCtor = mod.GLTFLoader;
-
-        // Se a van fallback ja estiver em cena, tenta trocar pelo modelo real.
-        if (van && !modelLoadFailed) {
-          tryAttachVanModel();
-        }
-      } catch (err) {
-        modelLoadFailed = true;
-        showToast("Nao foi possivel carregar o modulo GLTFLoader");
+    function syncGLTFLoaderCtor() {
+      if (!GLTFLoaderCtor && window.RotaGLTFLoader) {
+        GLTFLoaderCtor = window.RotaGLTFLoader;
       }
     }
 
@@ -727,12 +726,21 @@
     function tryAttachVanModel() {
       if (!van) return;
 
+      syncGLTFLoaderCtor();
+
       if (cachedVanModel) {
         attachVanModel(cachedVanModel.clone(true));
         return;
       }
 
       if (modelLoadFailed || !GLTFLoaderCtor) {
+        // Aguarda o modulo carregar no navegador sem travar o jogo.
+        if (!modelLoadFailed && loaderRetryCount < 10) {
+          loaderRetryCount += 1;
+          setTimeout(() => {
+            if (van && !cachedVanModel) tryAttachVanModel();
+          }, 250);
+        }
         return;
       }
 
