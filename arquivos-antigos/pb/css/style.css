@@ -1,0 +1,106 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body */
+body {
+  background-color: #F1F1F1;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+header {
+  background-color: #CCC;
+  text-align: center;
+  padding: 16px;
+}
+
+header img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+}
+
+/* Main */
+main {
+  background-color: white;
+  border-radius: 20px;
+  padding: 24px;
+  margin: 24px auto;
+  max-width: 900px;
+  width: 90%;
+}
+
+/* Títulos */
+h1 {
+  color: #222;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 16px;
+  margin-top: 20px;
+}
+
+/* Imagens */
+img {
+  width: 100%;
+  border-radius: 20px;
+  margin: 16px 0;
+  display: block;
+}
+
+/* Parágrafos / texto */
+p {
+  font-family: Arial, sans-serif;
+  text-align: justify;
+  margin-bottom: 16px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Links */
+a {
+  background-color: yellow;
+  color: #222;
+  padding: 10px;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+a:hover {
+  background-color: #e6d800;
+}
+
+/* Footer */
+footer {
+  background-color: #000;
+  color: yellow;
+  text-align: center;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  main {
+    width: 95%;
+    padding: 16px;
+    margin: 12px auto;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+}

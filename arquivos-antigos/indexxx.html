@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotaliza - Simulador de Transporte Universitário</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <i class="fas fa-route"></i> Rotaliza
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="#sobre"><i class="fas fa-user"></i> Sobre Mim</a></li>
+                <li><a href="#jogo"><i class="fas fa-gamepad"></i> Jogar</a></li>
+                <li><a href="#contato"><i class="fas fa-comments"></i> Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO / HOME -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-badge">🚐 Projeto Acadêmico</div>
+            <h1>Rotaliza</h1>
+            <p class="hero-subtitle">Simulador Logístico de Transporte Universitário</p>
+            <p class="hero-desc">
+                Entre na pele de <strong>Fábio</strong>, motorista de transporte universitário, 
+                e enfrente o desafio real de planejar rotas, gerenciar combustível e lidar com 
+                os imprevistos da madrugada. Baseado em dores reais de um usuário real.
+            </p>
+            <div class="hero-buttons">
+                <a href="#jogo" class="btn btn-primary"><i class="fas fa-play"></i> Jogar Agora</a>
+                <a href="#sobre" class="btn btn-secondary"><i class="fas fa-info-circle"></i> Saiba Mais</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <i class="fas fa-gas-pump"></i>
+                    <span>Gerencie Diesel</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-brain"></i>
+                    <span>Controle Estresse</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>Planeje Rotas</span>
+                </div>
+                <div class="stat">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Imprevistos</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- SOBRE MIM -->
+    <section id="sobre" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-user-circle"></i> Sobre o Projeto</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="sobre-grid">
+                <div class="sobre-card persona-card">
+                    <div class="card-icon"><i class="fas fa-id-card"></i></div>
+                    <h3>A Persona: Fábio</h3>
+                    <p>
+                        Fábio é um motorista de transporte universitário com idade avançada que enfrenta 
+                        um problema real: <strong>esquecer as rotas dos alunos</strong>. Todo dia ele precisa 
+                        lembrar endereços, horários e lidar com cancelamentos de última hora pelo WhatsApp.
+                    </p>
+                    <ul class="persona-details">
+                        <li><i class="fas fa-briefcase"></i> Profissão: Motorista de van universitária</li>
+                        <li><i class="fas fa-exclamation-triangle"></i> Dor: Esquecimento de rotas</li>
+                        <li><i class="fas fa-clock"></i> Rotina: Turnos noturnos/madrugada</li>
+                        <li><i class="fas fa-lightbulb"></i> Necessidade: Sistema de gerenciamento de rotas</li>
+                    </ul>
+                </div>
+                <div class="sobre-card projeto-card">
+                    <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>O Projeto</h3>
+                    <p>
+                        O <strong>Rotaliza</strong> é um jogo-simulador criado como projeto acadêmico 
+                        para a faculdade. Ele foi desenvolvido 100% baseado nas dores reais do usuário 
+                        (persona Fábio), demonstrando como a gamificação pode ser usada para resolver 
+                        problemas do mundo real.
+                    </p>
+                    <div class="mecanicas">
+                        <h4><i class="fas fa-cogs"></i> Mecânicas do Jogo</h4>
+                        <div class="mecanica-item">
+                            <i class="fas fa-map"></i>
+                            <div>
+                                <strong>Planejamento de Rota</strong>
+                                <p>Trace o melhor caminho pelo mapa para entregar os alunos sem desperdiçar combustível.</p>
+                            </div>
+                        </div>
+                        <div class="mecanica-item">
+                            <i class="fab fa-whatsapp"></i>
+                            <div>
+                                <strong>Eventos Aleatórios</strong>
+                                <p>Alunos cancelam ou confirmam viagens de última hora — recalcule sua rota!</p>
+                            </div>
+                        </div>
+                        <div class="mecanica-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <div>
+                                <strong>Barras de Status</strong>
+                                <p>Diesel e Estresse: mantenha o equilíbrio para não ter Game Over.</p>
+                            </div>
+                        </div>
+                        <div class="mecanica-item">
+                            <i class="fas fa-trophy"></i>
+                            <div>
+                                <strong>Condição de Vitória</strong>
+                                <p>Entregue todos os alunos em segurança e chegue em casa a tempo de descansar.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JOGO -->
+    <section id="jogo" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-gamepad"></i> Rotaliza - O Jogo</h2>
+                <div class="section-line"></div>
+                <p class="section-subtitle">Planeje sua rota, gerencie recursos e entregue todos os alunos!</p>
+            </div>
+
+            <div id="game-container">
+                <!-- TELA INICIAL DO JOGO -->
+                <div id="game-start" class="game-screen active">
+                    <div class="game-start-content">
+                        <div class="game-logo">🚐</div>
+                        <h3>Rotaliza</h3>
+                        <p>Você é Fábio, motorista de transporte universitário. Sua missão: buscar todos os alunos e levá-los com segurança até a universidade.</p>
+                        <div class="game-instructions">
+                            <div class="instruction"><i class="fas fa-mouse-pointer"></i> Clique nas casas dos alunos para traçar sua rota</div>
+                            <div class="instruction"><i class="fas fa-gas-pump"></i> Cuidado com o diesel — cada movimento gasta combustível</div>
+                            <div class="instruction"><i class="fas fa-brain"></i> Controle o estresse — eventos inesperados vão aparecer</div>
+                            <div class="instruction"><i class="fab fa-whatsapp"></i> Fique atento ao WhatsApp — alunos podem cancelar!</div>
+                        </div>
+                        <button id="startGameBtn" class="btn btn-primary btn-lg">
+                            <i class="fas fa-play"></i> Iniciar Noite de Trabalho
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TELA DO JOGO -->
+                <div id="game-play" class="game-screen">
+                    <!-- HUD -->
+                    <div id="game-hud">
+                        <div class="hud-bar">
+                            <div class="hud-label"><i class="fas fa-gas-pump"></i> Diesel</div>
+                            <div class="bar-container">
+                                <div id="fuel-bar" class="bar fuel" style="width: 100%"></div>
+                            </div>
+                            <span id="fuel-text">100%</span>
+                        </div>
+                        <div class="hud-bar">
+                            <div class="hud-label"><i class="fas fa-brain"></i> Estresse</div>
+                            <div class="bar-container">
+                                <div id="stress-bar" class="bar stress" style="width: 0%"></div>
+                            </div>
+                            <span id="stress-text">0%</span>
+                        </div>
+                        <div class="hud-info">
+                            <div class="hud-item">
+                                <i class="fas fa-users"></i>
+                                <span>Alunos: <strong id="passengers-count">0/0</strong></span>
+                            </div>
+                            <div class="hud-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Tempo: <strong id="game-timer">00:00</strong></span>
+                            </div>
+                            <div class="hud-item">
+                                <i class="fas fa-star"></i>
+                                <span>Pontos: <strong id="game-score">0</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MAPA DO JOGO -->
+                    <div id="game-map-wrapper">
+                        <canvas id="game-canvas"></canvas>
+                    </div>
+
+                    <!-- PAINEL WHATSAPP -->
+                    <div id="whatsapp-panel" class="hidden">
+                        <div class="whatsapp-header">
+                            <i class="fab fa-whatsapp"></i> Grupo da Van
+                        </div>
+                        <div id="whatsapp-messages"></div>
+                        <button id="whatsapp-close" class="btn btn-sm">OK, Entendi</button>
+                    </div>
+                </div>
+
+                <!-- TELA DE GAME OVER -->
+                <div id="game-over" class="game-screen">
+                    <div class="game-end-content">
+                        <div id="game-result-icon"></div>
+                        <h3 id="game-result-title"></h3>
+                        <p id="game-result-text"></p>
+                        <div id="game-result-stats"></div>
+                        <button id="restartGameBtn" class="btn btn-primary btn-lg">
+                            <i class="fas fa-redo"></i> Tentar Novamente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTATO / FEEDBACK -->
+    <section id="contato" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-comments"></i> Converse Comigo</h2>
+                <div class="section-line"></div>
+                <p class="section-subtitle">Deixe seu feedback sobre o site e o jogo, ou entre em contato!</p>
+            </div>
+            <div class="contato-grid">
+                <div class="contato-form-wrapper">
+                    <form id="feedbackForm" class="feedback-form">
+                        <div class="form-group">
+                            <label for="nome"><i class="fas fa-user"></i> Nome</label>
+                            <input type="text" id="nome" name="nome" placeholder="Seu nome" required maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope"></i> E-mail</label>
+                            <input type="email" id="email" name="email" placeholder="seu@email.com" required maxlength="200">
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo"><i class="fas fa-tag"></i> Tipo</label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="">Selecione...</option>
+                                <option value="feedback">Feedback do Jogo</option>
+                                <option value="sugestao">Sugestão</option>
+                                <option value="bug">Reportar Bug</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mensagem"><i class="fas fa-comment-dots"></i> Mensagem</label>
+                            <textarea id="mensagem" name="mensagem" rows="5" placeholder="Escreva sua mensagem aqui..." required maxlength="2000"></textarea>
+                        </div>
+                        <div class="form-group rating-group">
+                            <label><i class="fas fa-star"></i> Avaliação do Jogo</label>
+                            <div class="star-rating" id="starRating">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="rating" name="rating" value="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">
+                            <i class="fas fa-paper-plane"></i> Enviar Mensagem
+                        </button>
+                    </form>
+                </div>
+                <div class="feedbacks-wrapper">
+                    <h3><i class="fas fa-quote-left"></i> Feedbacks Recebidos</h3>
+                    <div id="feedbackList" class="feedback-list">
+                        <div class="feedback-empty">
+                            <i class="fas fa-comment-slash"></i>
+                            <p>Nenhum feedback ainda. Seja o primeiro!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-route"></i> Rotaliza
+                    <p>Projeto Acadêmico — Faculdade 2026</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#home">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#jogo">Jogar</a>
+                    <a href="#contato">Contato</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rotaliza. Todos os direitos reservados. Projeto acadêmico.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
