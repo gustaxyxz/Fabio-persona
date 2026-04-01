@@ -6,10 +6,17 @@ Projeto acadêmico baseado na persona Fábio Alves, motorista de van universitá
 
 - Site publicado no GitHub Pages: arquivos principais ficam na raiz para não quebrar a hospedagem.
 - Sprint 1: materiais da persona em sprint-1.
-- Sprint 2: documentação da sprint em sprint-2.
-- Projeto final: guia de entrega e ZIP em projeto-final.
+- Sprint 2: mini GDD e explicação da sprint em sprint-2.
+- Projeto final: guia de entrega, texto da apresentação e ZIP em projeto-final.
 - Referências: rubricas e materiais de apoio em referencias.
-- Arquivos antigos: testes e versões descartadas em arquivos-antigos.
+
+## O que fica em cada pasta
+
+- Raiz: index.html, sobre.html, comprar.html, contato.html, jogar.html, game.html, css e js.
+- sprint-1: arquivo da persona entregue na Sprint 1.
+- sprint-2: mini GDD e documentação da Sprint 2.
+- projeto-final: guia de entrega, texto da fala e ZIP final.
+- referencias: documento-base da atividade e rubrica de avaliação.
 
 ## Links principais
 

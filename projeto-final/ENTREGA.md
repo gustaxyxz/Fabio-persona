@@ -61,7 +61,7 @@
 2. Selecionar a pasta do projeto.
 3. Clicar com o botão direito.
 4. Escolher Enviar para > Pasta compactada.
-5. Conferir se o ZIP contém index.html, css, js, game.html e GDD.md.
+5. Conferir se o ZIP contém index.html, css, js, game.html e sprint-2/GDD.md.
 
 ## Roteiro de Apresentação
 

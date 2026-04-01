@@ -4,7 +4,7 @@ Esta pasta organiza os elementos centrais da Sprint 2.
 
 ## Conteúdo relacionado
 
-- Mini GDD principal: ../GDD.md
+- Mini GDD principal: ./GDD.md
 - Primeira página do site: ../index.html
 - Página da persona: ../sobre.html
 - Protótipo jogável: ../jogar.html

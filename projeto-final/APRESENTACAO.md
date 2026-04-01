@@ -11,3 +11,23 @@ Também produzimos um mini GDD, que organiza a visão geral do projeto, as mecâ
 Por fim, o projeto foi publicado no GitHub e hospedado no GitHub Pages, o que permite acessar a solução diretamente pelo navegador. Dessa forma, conseguimos entregar a persona, a primeira página do site, o protótipo jogável e a documentação do jogo dentro do mesmo repositório, mostrando a evolução do trabalho desde a Sprint 1 até a entrega atual.
 
 Se quiser uma versão mais curta para decorar, a ideia principal é esta: o projeto Rota foi criado para representar os desafios reais do Fábio e mostrar, de forma visual e interativa, como o planejamento de rotas pode reduzir erros, custos e desgaste na rotina dele.
+
+## Versão curta para decorar
+
+Boa noite. Nosso projeto se chama Rota e foi criado a partir da persona Fábio Alves, um motorista de van universitária que trabalha à noite e enfrenta dificuldades com organização de rotas, gasto de combustível e cansaço. Para responder a esse problema, desenvolvemos uma primeira página de site voltada para a persona e um protótipo jogável que transforma essas dores em experiência interativa. No jogo, o jogador precisa buscar alunos, controlar combustível e administrar energia, mostrando na prática os desafios da rotina do Fábio. Além disso, produzimos um mini GDD com visão geral, mecânicas, narrativa e interface do projeto. Tudo foi colocado no mesmo repositório, com evolução por sprint, e publicado no GitHub Pages para acesso direto no navegador.
+
+## Cola rápida
+
+1. Quem é o Fábio.
+2. Qual é a dor principal.
+3. O que é o site.
+4. O que é o protótipo.
+5. O que é o mini GDD.
+6. Onde está publicado.
+
+## Estrutura que você pode explicar ao professor
+
+- Sprint 1: persona em sprint-1.
+- Sprint 2: mini GDD em sprint-2 e site funcionando na raiz.
+- Projeto final: entrega, apresentação e ZIP em projeto-final.
+- Referências: rubrica e material-base em referencias.
