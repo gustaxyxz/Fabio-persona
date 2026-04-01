@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprint 2 | RotaLiza</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <canvas id="particles"></canvas>
+
+  <nav>
+    <div class="logo" data-text="ROTALIZA">ROTALIZA</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="sobre.html">Persona</a></li>
+      <li><a href="comprar.html" class="active">Sprint 2</a></li>
+      <li><a href="contato.html">Apresentação</a></li>
+    </ul>
+    <div class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <section class="section centered">
+      <div class="section-label reveal">Entrega</div>
+      <h2 class="reveal">O que entra na <span style="color:var(--red)">Sprint 2</span></h2>
+      <div class="separator reveal"></div>
+      <p class="reveal">A entrega pede a primeira página do site estruturada no GitHub Pages e um mini Game Design Document alinhado à persona. Esta página resume exatamente esses pontos.</p>
+
+      <div class="pricing-card reveal">
+        <div class="tier">Entrega acadêmica</div>
+        <h3>RotaLiza no navegador</h3>
+        <div class="price">100% <small>online</small></div>
+        <ul>
+          <li>Primeira página estruturada para a persona Fábio</li>
+          <li>Navegação com contexto do problema e da solução</li>
+          <li>Protótipo jogável do transporte universitário</li>
+          <li>Mini GDD descrevendo mecânicas, narrativa e interface</li>
+          <li>Arquivos prontos para publicação no GitHub Pages</li>
+          <li>Base organizada para a apresentação em sala</li>
+        </ul>
+        <a href="GDD.md" class="btn btn-primary" style="width:100%;text-align:center;">Abrir mini GDD</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-label reveal">Checklist</div>
+      <h2 class="reveal">Preparação para a <span style="color:var(--red)">entrega final</span></h2>
+      <div class="separator reveal"></div>
+
+      <div class="features">
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="icon">🗂️</div>
+          <h3>Arquivo ZIP</h3>
+          <p>Compacte a pasta do projeto com os arquivos finais, incluindo páginas, estilos, scripts e o mini GDD.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="icon">🐙</div>
+          <h3>Link do GitHub</h3>
+          <p>O repositório deve conter o código organizado, com index.html na raiz para facilitar o deploy e a avaliação.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="icon">🚀</div>
+          <h3>Link do Pages</h3>
+          <p>O site precisa estar publicado e funcionando no navegador para demonstrar a primeira página e o protótipo.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="icon">🎤</div>
+          <h3>Apresentação</h3>
+          <p>Explique a persona, mostre a dor, apresente o site, abra o jogo e conecte a proposta ao GDD de forma objetiva.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section centered reveal">
+      <p style="color:var(--text-dim); font-size:1rem;">
+        Quer demonstrar a entrega funcionando? <a href="jogar.html" style="color:var(--red); border-bottom:1px solid var(--red);">Abra o protótipo</a> e mostre o problema em ação.
+      </p>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 RotaLiza. Escopo da Sprint 2 consolidado para a entrega.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

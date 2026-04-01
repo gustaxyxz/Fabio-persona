@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Persona | RotaLiza</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <canvas id="particles"></canvas>
+
+  <nav>
+    <div class="logo" data-text="ROTALIZA">ROTALIZA</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="sobre.html" class="active">Persona</a></li>
+      <li><a href="comprar.html">Sprint 2</a></li>
+      <li><a href="contato.html">Apresentação</a></li>
+    </ul>
+    <div class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <section class="section centered">
+      <div class="section-label reveal">Persona</div>
+      <h2 class="reveal">Quem é <span style="color:var(--red)">Fábio Alves</span></h2>
+      <div class="separator reveal"></div>
+      <p class="reveal">Fábio é motorista de van universitária, trabalha no período noturno e precisa lidar com uma rotina de coleta de alunos em diferentes pontos da cidade. O problema principal não é só dirigir: é lembrar endereços, reagir a imprevistos e não desperdiçar combustível quando já está exausto.</p>
+      <p class="reveal">RotaLiza nasce como resposta visual e interativa para esse cenário. O site contextualiza a dor da persona e o protótipo transforma essa dor em desafio de gameplay.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-label reveal">Dores Reais</div>
+      <h2 class="reveal">O que precisa ser <span style="color:var(--red)">resolvido</span></h2>
+      <div class="separator reveal"></div>
+
+      <div class="features">
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="icon">📍</div>
+          <h3>Esquecimento de endereços</h3>
+          <p>Durante a madrugada, lembrar a sequência ideal de casas e ruas se torna mais difícil e aumenta o risco de erros.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="icon">😴</div>
+          <h3>Cansaço acumulado</h3>
+          <p>O turno noturno desgasta a atenção. Quanto mais longa e confusa a rota, maior a chance de falha operacional.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="icon">⛽</div>
+          <h3>Gasto de combustível</h3>
+          <p>Qualquer desvio representa custo extra. O projeto enfatiza economia e eficiência como parte central da solução.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="icon">📲</div>
+          <h3>Imprevistos de última hora</h3>
+          <p>Alunos podem confirmar, cancelar ou mudar planos em cima da hora, exigindo reorganização rápida da rota.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-5">
+          <div class="icon">🖱️</div>
+          <h3>Baixa fricção digital</h3>
+          <p>A interface precisa ser simples, direta e navegável em navegador, sem depender de instalação ou aprendizado complexo.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-6">
+          <div class="icon">🎯</div>
+          <h3>Objetivo do projeto</h3>
+          <p>Demonstrar, com site e jogo, como uma solução de rotas pode reduzir desgaste, tempo perdido e custo na rotina do Fábio.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats-bar reveal">
+      <div class="stat-item">
+        <span class="number">52</span>
+        <span class="label">Anos</span>
+      </div>
+      <div class="stat-item">
+        <span class="number">18</span>
+        <span class="label">Hora de saída</span>
+      </div>
+      <div class="stat-item">
+        <span class="number">1</span>
+        <span class="label">Van</span>
+      </div>
+      <div class="stat-item">
+        <span class="number">3</span>
+        <span class="label">Problemas-chave</span>
+      </div>
+    </div>
+
+    <section class="section centered reveal">
+      <h2>Da persona para o <span style="color:var(--red)">protótipo</span></h2>
+      <div class="separator"></div>
+      <p>O próximo passo é mostrar como essas dores aparecem dentro do jogo e da entrega da Sprint 2.</p>
+      <div class="btn-group" style="margin-top:30px;">
+        <a href="jogar.html" class="btn btn-primary">Abrir protótipo</a>
+        <a href="comprar.html" class="btn btn-secondary">Ver a sprint</a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 RotaLiza. Persona e solução conectadas em uma única proposta.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

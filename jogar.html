@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protótipo | RotaLiza</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <canvas id="particles"></canvas>
+
+  <nav>
+    <div class="logo" data-text="ROTALIZA">ROTALIZA</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Início</a></li>
+      <li><a href="sobre.html">Persona</a></li>
+      <li><a href="comprar.html">Sprint 2</a></li>
+      <li><a href="contato.html">Apresentação</a></li>
+    </ul>
+    <div class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="page-content">
+    <section class="section centered">
+      <div class="section-label reveal">Protótipo</div>
+      <h2 class="reveal">Fábio na <span style="color:var(--red)">madrugada</span></h2>
+      <div class="separator reveal"></div>
+      <p class="reveal">Esta versão jogável representa a rotina do Fábio: buscar alunos, administrar combustível, controlar o cansaço e chegar ao destino sem comprometer a viagem.</p>
+
+      <div class="play-area">
+        <div class="game-frame">
+          <iframe src="game.html" title="Protótipo jogável RotaLiza" loading="lazy"></iframe>
+        </div>
+
+        <p style="color:var(--text-dim); margin:20px 0 30px; font-size:1.1rem;">
+          Se preferir, você pode abrir o jogo em tela dedicada para demonstrar durante a apresentação.
+        </p>
+        <div class="btn-group">
+          <a href="game.html" class="btn btn-primary">Abrir tela dedicada</a>
+          <a href="comprar.html" class="btn btn-secondary">Voltar à entrega</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-label reveal">Leitura do jogo</div>
+      <h2 class="reveal">O que observar durante a <span style="color:var(--red)">demonstração</span></h2>
+      <div class="separator reveal"></div>
+
+      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="icon">⛽</div>
+          <h3>Combustível</h3>
+          <p>Cada movimento consome recurso e reforça a importância de escolher uma rota curta e eficiente.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="icon">😴</div>
+          <h3>Energia</h3>
+          <p>O desgaste do personagem mostra que o problema da persona não é só logístico, mas também humano.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="icon">🎓</div>
+          <h3>Alunos</h3>
+          <p>Buscar todos os passageiros representa a responsabilidade do trabalho e a necessidade de organizar prioridades.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="icon">🏫</div>
+          <h3>Universidade</h3>
+          <p>O destino final fecha o ciclo da rota e ajuda a explicar visualmente a meta principal de cada partida.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 RotaLiza. Protótipo jogável alinhado à persona e ao mini GDD.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

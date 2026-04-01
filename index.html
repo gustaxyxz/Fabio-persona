@@ -1,538 +1,120 @@
-﻿<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RotaFácil — Transporte Universitário Inteligente</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
-  <style>
-    /* ===== RESET ===== */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body { font-family: 'Inter', system-ui, sans-serif; background: #05050f; color: #e0e0e0; overflow-x: hidden; line-height: 1.6; }
-    a { text-decoration: none; color: inherit; }
-
-    /* ===== CUSTOM PROPERTIES ===== */
-    :root {
-      --teal:    #00d4aa;
-      --amber:   #f0c040;
-      --red:     #ff5555;
-      --bg:      #05050f;
-      --card:    #0d1125;
-      --border:  #1a2240;
-      --text:    #e0e0e0;
-      --muted:   #6677aa;
-    }
-
-    /* ===== SCROLLBAR ===== */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-    /* ===== HEADER ===== */
-    header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 1rem 2rem;
-      background: rgba(5,5,15,.86);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -.5px; }
-    .logo span { color: var(--teal); }
-    nav { display: flex; gap: 2rem; align-items: center; }
-    nav a { color: var(--muted); font-size: .9rem; font-weight: 500; transition: color .2s; }
-    nav a:hover { color: var(--text); }
-    .nav-cta {
-      padding: .5rem 1.25rem; border-radius: 8px; font-size: .9rem; font-weight: 700;
-      background: var(--teal); color: #05050f;
-      transition: box-shadow .2s, transform .2s;
-    }
-    .nav-cta:hover { box-shadow: 0 4px 16px rgba(0,212,170,.4); transform: translateY(-1px); }
-
-    /* ===== HERO ===== */
-    .hero {
-      min-height: 100vh; position: relative; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      padding: 8rem 2rem 6rem;
-    }
-    #hero-canvas {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      pointer-events: none;
-    }
-    .hero-content { position: relative; z-index: 1; text-align: center; max-width: 820px; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .4rem 1rem; background: rgba(0,212,170,.1);
-      border: 1px solid rgba(0,212,170,.35); border-radius: 20px;
-      font-size: .8rem; font-weight: 600; color: var(--teal); margin-bottom: 1.5rem;
-      text-transform: uppercase; letter-spacing: 1px;
-    }
-    .hero h1 {
-      font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 900; line-height: 1.1;
-      color: #fff; margin-bottom: 1.2rem;
-    }
-    .hero h1 em { color: var(--teal); font-style: normal; }
-    .hero p { font-size: 1.15rem; color: var(--muted); max-width: 600px; margin: 0 auto 2.5rem; }
-    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .85rem 2rem; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s; border: none; }
-    .btn-primary { background: var(--teal); color: #05050f; }
-    .btn-primary:hover { box-shadow: 0 6px 24px rgba(0,212,170,.45); transform: translateY(-2px); }
-    .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
-    .btn-outline:hover { border-color: var(--teal); color: var(--teal); }
-    .hero-scroll {
-      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: .5rem;
-      color: var(--muted); font-size: .75rem; letter-spacing: 1px; text-transform: uppercase;
-      animation: bounce 2s infinite;
-    }
-    .hero-scroll::after { content: ''; width: 1px; height: 40px; background: linear-gradient(to bottom, var(--muted), transparent); }
-    @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-6px); } }
-
-    /* ===== SECTIONS ===== */
-    section { padding: 6rem 2rem; }
-    .container { max-width: 1080px; margin: 0 auto; }
-    .section-label {
-      display: inline-block; padding: .3rem .9rem; border-radius: 20px;
-      background: rgba(0,212,170,.08); border: 1px solid rgba(0,212,170,.25);
-      color: var(--teal); font-size: .75rem; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; margin-bottom: 1rem;
-    }
-    .section-heading { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: .8rem; }
-    .section-sub { color: var(--muted); font-size: 1rem; max-width: 560px; }
-
-    /* ===== PERSONA SECTION ===== */
-    #persona { background: var(--bg); }
-    .persona-layout { display: grid; grid-template-columns: 320px 1fr; gap: 3rem; align-items: start; margin-top: 4rem; }
-    .persona-profile {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-      padding: 2rem; position: sticky; top: 5rem;
-    }
-    .persona-avatar {
-      width: 90px; height: 90px; border-radius: 50%;
-      background: linear-gradient(135deg, #0d1f3a, #1a3055);
-      border: 3px solid var(--teal); display: flex; align-items: center; justify-content: center;
-      font-size: 2.6rem; margin-bottom: 1.2rem;
-    }
-    .persona-name { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: .3rem; }
-    .persona-role { color: var(--teal); font-size: .85rem; font-weight: 600; margin-bottom: 1.2rem; }
-    .persona-info { display: flex; flex-direction: column; gap: .6rem; }
-    .persona-info-row { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0; border-bottom: 1px solid var(--border); font-size: .85rem; }
-    .persona-info-row:last-child { border-bottom: none; }
-    .pir-label { color: var(--muted); }
-    .pir-value { font-weight: 600; color: var(--text); }
-
-    .persona-cards { display: flex; flex-direction: column; gap: 1.2rem; }
-    .pcard {
-      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-      padding: 1.4rem 1.5rem; transition: border-color .2s, transform .2s;
-    }
-    .pcard:hover { border-color: rgba(0,212,170,.4); transform: translateX(4px); }
-    .pcard-header { display: flex; align-items: center; gap: .7rem; margin-bottom: .7rem; }
-    .pcard-icon { font-size: 1.2rem; }
-    .pcard-title { font-size: .9rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .5px; }
-    .pcard ul { padding-left: 1.2rem; list-style: none; display: flex; flex-direction: column; gap: .35rem; }
-    .pcard li { color: #99aacc; font-size: .9rem; position: relative; padding-left: 1rem; }
-    .pcard li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: .8rem; }
-    .pcard.highlight { border-color: rgba(0,212,170,.4); background: linear-gradient(135deg, #0d1125, #0d1f20); }
-    .pcard.pain { border-color: rgba(255,85,85,.3); }
-    .pcard.pain .pcard-title { color: #ff7766; }
-    .pcard.pain li::before { color: #ff5555; }
-
-    /* ===== STATS STRIP ===== */
-    #stats {
-      background: linear-gradient(135deg, #080d1e, #0d1525);
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      padding: 3.5rem 2rem;
-    }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center; max-width: 900px; margin: 0 auto; }
-    .stat-item {}
-    .stat-number { font-size: 2.8rem; font-weight: 900; line-height: 1; }
-    .stat-label { font-size: .85rem; color: var(--muted); margin-top: .4rem; text-transform: uppercase; letter-spacing: 1px; }
-
-    /* ===== SOLUTION SECTION ===== */
-    #solucao { background: #070714; }
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; margin-top: 3.5rem; }
-    .fcard {
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-      padding: 1.8rem; transition: all .2s; cursor: default;
-      position: relative; overflow: hidden;
-    }
-    .fcard::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--teal), transparent); opacity: 0; transition: opacity .2s;
-    }
-    .fcard:hover { border-color: rgba(0,212,170,.3); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,.4); }
-    .fcard:hover::before { opacity: 1; }
-    .fcard-icon { font-size: 2rem; margin-bottom: .9rem; }
-    .fcard h3 { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: .5rem; }
-    .fcard p { font-size: .88rem; color: var(--muted); }
-
-    /* ===== HOW IT WORKS ===== */
-    #como-funciona { background: var(--bg); }
-    .steps-track { display: flex; gap: 1.5rem; margin-top: 3.5rem; position: relative; }
-    .steps-track::before {
-      content: ''; position: absolute; top: 28px; left: 28px; right: 28px; height: 2px;
-      background: linear-gradient(90deg, var(--teal), var(--amber), var(--teal));
-      opacity: .25;
-    }
-    .step-card { flex: 1; text-align: center; position: relative; }
-    .step-num {
-      width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 1rem;
-      background: var(--card); border: 2px solid var(--teal);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; font-weight: 900; color: var(--teal); position: relative; z-index: 1;
-    }
-    .step-card h3 { font-size: .95rem; font-weight: 700; color: #fff; margin-bottom: .4rem; }
-    .step-card p { font-size: .85rem; color: var(--muted); }
-
-    /* ===== GAME CTA ===== */
-    #jogo {
-      background: linear-gradient(135deg, #050510 0%, #0d1520 50%, #050510 100%);
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-    .game-cta-box {
-      max-width: 700px; margin: 0 auto;
-      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
-      padding: 3.5rem 2.5rem; position: relative; overflow: hidden;
-    }
-    .game-cta-box::before {
-      content: ''; position: absolute; inset: 0; border-radius: 20px;
-      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,170,.12), transparent 70%);
-      pointer-events: none;
-    }
-    .game-cta-box h2 { font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: .6rem; }
-    .game-cta-box p { color: var(--muted); margin-bottom: 2rem; }
-    .game-preview {
-      font-size: 5rem; margin-bottom: 1.5rem; filter: drop-shadow(0 0 20px rgba(0,212,170,.5));
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-    /* ===== FOOTER ===== */
-    footer {
-      background: #030309; border-top: 1px solid var(--border);
-      padding: 2.5rem 2rem; text-align: center;
-    }
-    .footer-logo { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: .5rem; }
-    .footer-logo span { color: var(--teal); }
-    footer p { font-size: .82rem; color: var(--muted); }
-
-    /* ===== REVEAL ANIMATION ===== */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s, transform .7s; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 900px) {
-      .persona-layout { grid-template-columns: 1fr; }
-      .persona-profile { position: static; }
-      .features-grid { grid-template-columns: repeat(2, 1fr); }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-      .steps-track { flex-direction: column; }
-      .steps-track::before { display: none; }
-      nav { display: none; }
-    }
-    @media (max-width: 600px) {
-      .features-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RotaLiza | Projeto Acadêmico</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
-  <header>
-    <div class="logo">Rota<span>Fácil</span></div>
-    <nav>
-      <a href="#persona">Persona</a>
-      <a href="#solucao">Solução</a>
-      <a href="#como-funciona">Como Funciona</a>
-      <a href="game.html" class="nav-cta">🎮 Jogar</a>
-    </nav>
-  </header>
+  <canvas id="particles"></canvas>
 
-  <!-- ===== HERO ===== -->
+  <nav>
+    <div class="logo" data-text="ROTALIZA">ROTALIZA</div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Início</a></li>
+      <li><a href="sobre.html">Persona</a></li>
+      <li><a href="comprar.html">Sprint 2</a></li>
+      <li><a href="contato.html">Apresentação</a></li>
+    </ul>
+    <div class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
   <section class="hero">
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-content">
-      <div class="hero-badge">🚐 Transporte Universitário Inteligente</div>
-      <h1>Rotas que <em>economizam</em><br>tempo e combustível</h1>
-      <p>Fábio Alves dirige de madrugada, cansado, buscando alunos espalhados pela cidade. RotaFácil ordena automaticamente a rota mais curta — menos gasto, menos estresse.</p>
-      <div class="hero-actions">
-        <a href="#persona" class="btn btn-primary">Conhecer a Persona</a>
-        <a href="game.html" class="btn btn-outline">🎮 Jogar o Jogo</a>
-      </div>
+    <div class="hero-bg-effect"></div>
+    <div class="hero-badge">Projeto acadêmico • sprint 2</div>
+    <h1>
+      <span class="line">RotaLiza</span>
+      <span class="line"><span class="highlight">Noites mais leves para Fábio</span></span>
+    </h1>
+    <p class="hero-subtitle">Uma primeira página pensada para a persona Fábio Alves e um protótipo jogável que transforma suas dores reais em uma experiência de rota, combustível e cansaço.</p>
+    <div class="btn-group">
+      <a href="jogar.html" class="btn btn-primary">Ver protótipo</a>
+      <a href="sobre.html" class="btn btn-secondary">Conhecer a persona</a>
     </div>
-    <div class="hero-scroll">Scroll</div>
-  </section>
-
-  <!-- ===== STATS ===== -->
-  <section id="stats">
-    <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item reveal">
-          <div class="stat-number" style="color:var(--teal)" data-target="52">0</div>
-          <div class="stat-label">Anos de Fábio</div>
-        </div>
-        <div class="stat-item reveal">
-          <div class="stat-number" style="color:var(--amber)" data-target="10000" data-prefix="R$" data-suffix="k">0</div>
-          <div class="stat-label">Renda mensal</div>
-        </div>
-        <div class="stat-item reveal">
-          <div class="stat-number" style="color:var(--red)" data-target="30" data-suffix="%">0</div>
-          <div class="stat-label">Combustível desperdiçado</div>
-        </div>
-        <div class="stat-item reveal">
-          <div class="stat-number" style="color:#a78bfa" data-target="0" data-text="0h">0h</div>
-          <div class="stat-label">Horas a mais na rota</div>
-        </div>
-      </div>
+    <div class="hero-scroll-indicator">
+      <span>descer</span>
+      <div class="scroll-line"></div>
     </div>
   </section>
 
-  <!-- ===== PERSONA ===== -->
-  <section id="persona">
-    <div class="container">
-      <div class="section-label">Persona</div>
-      <h2 class="section-heading">Quem é Fábio Alves?</h2>
-      <p class="section-sub">Motorista de transporte universitário de Engenheiro Beltrão — PR. Entenda seu dia a dia, dores e necessidades.</p>
+  <div class="stats-bar reveal">
+    <div class="stat-item">
+      <span class="number">52</span>
+      <span class="label">Anos do Fábio</span>
+    </div>
+    <div class="stat-item">
+      <span class="number">3</span>
+      <span class="label">Dores centrais</span>
+    </div>
+    <div class="stat-item">
+      <span class="number">1</span>
+      <span class="label">Protótipo web</span>
+    </div>
+    <div class="stat-item">
+      <span class="number">100%</span>
+      <span class="label">Navegador</span>
+    </div>
+  </div>
 
-      <div class="persona-layout reveal">
-        <!-- Profile -->
-        <div class="persona-profile">
-          <div class="persona-avatar">🧑‍🔧</div>
-          <div class="persona-name">Fábio Alves</div>
-          <div class="persona-role">Motorista de Transporte Universitário</div>
-          <div class="persona-info">
-            <div class="persona-info-row"><span class="pir-label">Idade</span><span class="pir-value">52 anos</span></div>
-            <div class="persona-info-row"><span class="pir-label">Cidade</span><span class="pir-value">Engenheiro Beltrão – PR</span></div>
-            <div class="persona-info-row"><span class="pir-label">Salário</span><span class="pir-value">R$ 10.000/mês</span></div>
-            <div class="persona-info-row"><span class="pir-label">Turno</span><span class="pir-value">Noturno / Madrugada</span></div>
-            <div class="persona-info-row"><span class="pir-label">Roteiro</span><span class="pir-value">Centro ↔ Paulo Grande</span></div>
-          </div>
-        </div>
+  <section class="section centered">
+    <div class="section-label reveal">Solução</div>
+    <h2 class="reveal">Site e jogo guiados pela <span style="color:var(--red)">mesma persona</span></h2>
+    <div class="separator reveal"></div>
+    <p class="reveal">A proposta une comunicação clara, contexto do problema e um mini game que mostra por que o planejamento de rotas é importante para a rotina do Fábio.</p>
 
-        <!-- Cards -->
-        <div class="persona-cards">
-          <div class="pcard reveal">
-            <div class="pcard-header"><span class="pcard-icon">📋</span><span class="pcard-title">Histórico</span></div>
-            <ul>
-              <li>Trabalha há anos com transporte noturno universitário.</li>
-              <li>Conhece a cidade, mas a memória falha pelo cansaço extremo.</li>
-              <li>Depende do WhatsApp para organizar as viagens diariamente.</li>
-            </ul>
-          </div>
-          <div class="pcard reveal">
-            <div class="pcard-header"><span class="pcard-icon">🎯</span><span class="pcard-title">Objetivos</span></div>
-            <ul>
-              <li>Economizar combustível reduzindo rotas desnecessárias.</li>
-              <li>Terminar a rota mais rápido para ir dormir logo.</li>
-              <li>Ter um sistema que mostre o caminho exato e automático.</li>
-            </ul>
-          </div>
-          <div class="pcard reveal">
-            <div class="pcard-header"><span class="pcard-icon">🕐</span><span class="pcard-title">Rotina e Comportamento</span></div>
-            <ul>
-              <li>Faz enquetes diárias no grupo dos alunos ("vou / não vou").</li>
-              <li>Alterna entregas entre o Centro e o bairro Paulo Grande.</li>
-              <li>Tenta calcular a melhor rota de cabeça enquanto dirige.</li>
-            </ul>
-          </div>
-          <div class="pcard pain reveal">
-            <div class="pcard-header"><span class="pcard-icon">😖</span><span class="pcard-title">Dores e Frustrações</span></div>
-            <ul>
-              <li>Cansaço mental e físico extremo durante a madrugada.</li>
-              <li>Esquece onde os alunos moram e dá voltas à toa.</li>
-              <li>Gasto excessivo de combustível por rotas mais longas.</li>
-              <li>Alunos confirmando ou cancelando de última hora pelo WhatsApp.</li>
-            </ul>
-          </div>
-          <div class="pcard highlight reveal">
-            <div class="pcard-header"><span class="pcard-icon">💡</span><span class="pcard-title">O Que Ele Precisa</span></div>
-            <ul>
-              <li>Um sistema simples que organize quem vai no ônibus.</li>
-              <li>Rotas automáticas com os caminhos mais curtos — sem pensar.</li>
-              <li>Visualizar o trajeto mais rápido antes da partida.</li>
-              <li>Reduzir a carga mental para focar apenas na direção segura.</li>
-            </ul>
-          </div>
-        </div>
+    <div class="features">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="icon">🧍</div>
+        <h3>Persona real</h3>
+        <p>O projeto parte de Fábio Alves, motorista de van universitária, e traduz sua rotina noturna em linguagem visual e narrativa.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="icon">🧠</div>
+        <h3>Esquecimento de rotas</h3>
+        <p>O site explica o problema principal: lembrar endereços, reagir a mudanças de última hora e evitar trajetos desnecessários.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="icon">⛽</div>
+        <h3>Combustível e cansaço</h3>
+        <p>Essas duas restrições aparecem como elementos centrais da experiência, reforçando as dores da persona de forma objetiva.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-4">
+        <div class="icon">🎮</div>
+        <h3>Protótipo jogável</h3>
+        <p>O usuário pode testar uma versão interativa do conceito e entender na prática o desafio de cumprir a rota sem falhar.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-5">
+        <div class="icon">📄</div>
+        <h3>Mini GDD</h3>
+        <p>O documento descreve visão, narrativa, mecânicas, interface e como o jogo atende diretamente à persona exigida pela faculdade.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-6">
+        <div class="icon">🌐</div>
+        <h3>Pronto para GitHub Pages</h3>
+        <p>A estrutura é simples de publicar e adequada para entrega online, facilitando o envio do link do repositório e da página hospedada.</p>
       </div>
     </div>
   </section>
 
-  <!-- ===== SOLUTION ===== -->
-  <section id="solucao">
-    <div class="container">
-      <div class="section-label">A Solução</div>
-      <h2 class="section-heading">RotaFácil resolve cada dor</h2>
-      <p class="section-sub">Tecnologia pensada para quem está cansado e não pode errar.</p>
-
-      <div class="features-grid">
-        <div class="fcard reveal"><div class="fcard-icon">🗺️</div><h3>Rota Otimizada Automática</h3><p>Algoritmo que calcula o menor caminho entre todos os alunos confirmados. Zero cálculo mental para Fábio.</p></div>
-        <div class="fcard reveal"><div class="fcard-icon">📋</div><h3>Lista de Passageiros em Tempo Real</h3><p>Confirmações e cancelamentos de última hora aparecem instantaneamente — chega do caos do WhatsApp.</p></div>
-        <div class="fcard reveal"><div class="fcard-icon">⛽</div><h3>Economia de Combustível</h3><p>Menos quilômetros rodados = menos gasto. O algoritmo de menor caminho garante economia real de combustível.</p></div>
-        <div class="fcard reveal"><div class="fcard-icon">😴</div><h3>Menos Carga Mental</h3><p>Fábio não precisa mais memorizar endereços ou calcular rotas de cabeça. O sistema faz tudo.</p></div>
-        <div class="fcard reveal"><div class="fcard-icon">⏱️</div><h3>Mais Tempo de Descanso</h3><p>Rotas mais curtas = terminar mais cedo. Fábio chega em casa antes para descansar para o dia seguinte.</p></div>
-        <div class="fcard reveal"><div class="fcard-icon">📱</div><h3>Interface Simplificada</h3><p>Pensada para quem está cansado às 3h da manhã. Poucos toques, informação clara e direta.</p></div>
-      </div>
+  <section class="section centered reveal">
+    <div class="section-label">Entrega</div>
+    <h2>Uma base sólida para a <span style="color:var(--red)">apresentação</span></h2>
+    <div class="separator"></div>
+    <p>Veja a persona, abra o protótipo e revise os itens que entram na Sprint 2 antes de publicar no GitHub Pages.</p>
+    <div class="btn-group" style="margin-top:30px;">
+      <a href="comprar.html" class="btn btn-primary">Ver o que entregar</a>
+      <a href="jogar.html" class="btn btn-secondary">Abrir o jogo</a>
     </div>
   </section>
 
-  <!-- ===== HOW IT WORKS ===== -->
-  <section id="como-funciona">
-    <div class="container">
-      <div class="section-label">Fluxo</div>
-      <h2 class="section-heading">Como Funciona</h2>
-      <p class="section-sub">Em 4 passos, o que antes levava horas de estresse vira rotina automática.</p>
-
-      <div class="steps-track">
-        <div class="step-card reveal">
-          <div class="step-num">1</div>
-          <h3>Alunos Confirmam</h3>
-          <p>Cada aluno registra presença ou ausência via sistema — sem enquetes no WhatsApp.</p>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-num">2</div>
-          <h3>Rota Calculada</h3>
-          <p>O algoritmo define automaticamente a rota mais curta com todos os alunos confirmados.</p>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-num">3</div>
-          <h3>Trajeto no Celular</h3>
-          <p>Fábio visualiza o trajeto completo antes de ligar a van. Nenhuma surpresa no caminho.</p>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-num">4</div>
-          <h3>Viagem Eficiente</h3>
-          <p>Segue a rota otimizada. Sem voltas desnecessárias, sem estresse, sem gasto extra de combustível.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== GAME CTA ===== -->
-  <section id="jogo">
-    <div class="container">
-      <div class="game-cta-box reveal">
-        <div class="game-preview">🚐</div>
-        <h2>Sinta o Desafio na Pele</h2>
-        <p>Jogue como Fábio. Planeje a rota perfeita numa cidade 3D, economize combustível e vença o cansaço da madrugada. Missão: buscar todos os alunos antes que acabe o tanque.</p>
-        <a href="game.html" class="btn btn-primary" style="font-size:1.1rem; padding:1rem 2.5rem;">🎮 Jogar Agora — Grátis</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
   <footer>
-    <div class="footer-logo">Rota<span>Fácil</span></div>
-    <p>Projeto acadêmico — Entrega Sprint 2 &nbsp;•&nbsp; 2026</p>
+    <p>&copy; 2026 RotaLiza. Projeto acadêmico sobre mobilidade universitária.</p>
   </footer>
 
-  <script>
-    // ===== HERO CANVAS (Starfield + Van path) =====
-    const hCanvas = document.getElementById('hero-canvas');
-    const hCtx = hCanvas.getContext('2d');
-    let stars = [];
-    let W, H;
-
-    function resizeHero() {
-      W = hCanvas.width = hCanvas.offsetWidth;
-      H = hCanvas.height = hCanvas.offsetHeight;
-    }
-    resizeHero();
-    window.addEventListener('resize', resizeHero);
-
-    for (let i = 0; i < 180; i++) {
-      stars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.5 + .3, s: Math.random() * .4 + .1, phase: Math.random() * Math.PI * 2 });
-    }
-
-    let vanX = -60, vanY = 0;
-    function drawHero(t) {
-      hCtx.clearRect(0, 0, W, H);
-      // Stars
-      stars.forEach(s => {
-        const opacity = .3 + .4 * Math.sin(t * s.s + s.phase);
-        hCtx.beginPath();
-        hCtx.arc(s.x * W, s.y * H * 0.6, s.r, 0, Math.PI * 2);
-        hCtx.fillStyle = `rgba(180,200,255,${opacity})`;
-        hCtx.fill();
-      });
-      // Van silhouette tracking
-      vanX += 0.25;
-      if (vanX > W + 80) vanX = -80;
-      vanY = H * 0.72 + Math.sin(t * 0.3) * 6;
-      const vw = 54, vh = 28;
-      hCtx.save();
-      hCtx.globalAlpha = .08;
-      hCtx.fillStyle = '#00d4aa';
-      hCtx.fillRect(vanX, vanY, vw, vh);
-      hCtx.globalAlpha = .18;
-      hCtx.fillRect(vanX + 6, vanY - 12, 30, 14);
-      // Headlight beams
-      hCtx.globalAlpha = .05;
-      hCtx.fillStyle = '#ffffcc';
-      hCtx.beginPath();
-      hCtx.moveTo(vanX + vw, vanY + 5);
-      hCtx.lineTo(vanX + vw + 120, vanY - 8);
-      hCtx.lineTo(vanX + vw + 120, vanY + 20);
-      hCtx.closePath();
-      hCtx.fill();
-      hCtx.restore();
-      // Road line
-      hCtx.save();
-      hCtx.globalAlpha = .06;
-      hCtx.strokeStyle = '#00d4aa';
-      hCtx.lineWidth = 1;
-      hCtx.setLineDash([20, 15]);
-      hCtx.beginPath();
-      hCtx.moveTo(0, H * 0.85);
-      hCtx.lineTo(W, H * 0.85);
-      hCtx.stroke();
-      hCtx.restore();
-    }
-
-    let lastT = 0;
-    function heroLoop(ts) {
-      const t = ts * 0.001;
-      drawHero(t);
-      requestAnimationFrame(heroLoop);
-    }
-    requestAnimationFrame(heroLoop);
-
-    // ===== SCROLL REVEAL =====
-    const revealEls = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((en, i) => {
-        if (en.isIntersecting) {
-          setTimeout(() => en.target.classList.add('visible'), i * 60);
-        }
-      });
-    }, { threshold: .1 });
-    revealEls.forEach(el => observer.observe(el));
-
-    // ===== COUNTER ANIMATION =====
-    const counters = document.querySelectorAll('[data-target]');
-    const cObserver = new IntersectionObserver((entries) => {
-      entries.forEach(en => {
-        if (!en.isIntersecting) return;
-        const el = en.target;
-        const target = +el.dataset.target;
-        const prefix = el.dataset.prefix || '';
-        const suffix = el.dataset.suffix || '';
-        if (el.dataset.text) { el.textContent = el.dataset.text; return; }
-        let current = 0;
-        const step = target / 60;
-        const interval = setInterval(() => {
-          current = Math.min(current + step, target);
-          el.textContent = prefix + Math.round(current).toLocaleString('pt-BR') + suffix;
-          if (current >= target) clearInterval(interval);
-        }, 25);
-        cObserver.unobserve(el);
-      });
-    }, { threshold: .5 });
-    counters.forEach(c => cObserver.observe(c));
-  </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
