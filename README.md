@@ -1,4 +1,4 @@
-# RotaLiza
+# Rota
 
 Projeto acadêmico baseado na persona Fábio Alves, motorista de van universitária que enfrenta dificuldades com rotas, combustível e cansaço na rotina noturna.
 

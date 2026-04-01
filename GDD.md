@@ -1,5 +1,5 @@
 ﻿# Mini Game Design Document (GDD)
-## RotaLiza — Fábio na Madrugada
+## Rota — Fábio na Madrugada
 
 ---
 
@@ -7,13 +7,13 @@
 
 | Campo | Detalhe |
 |---|---|
-| **Nome do jogo** | RotaLiza — Fábio na Madrugada |
+| **Nome do jogo** | Rota — Fábio na Madrugada |
 | **Gênero** | Puzzle / Estratégia de Rotas (Otimização de Caminhos) |
 | **Plataforma** | Web Browser (PC e Mobile) — GitHub Pages, sem instalação |
 | **Público-alvo** | Estudantes universitários e profissionais de TI (18–35 anos) com acesso a navegador moderno |
 
 **Resumo do jogo:**
-RotaLiza — Fábio na Madrugada é um jogo de puzzle 3D em que o jogador assume o papel de Fábio Alves, motorista de van universitária de 52 anos em Engenheiro Beltrão — PR. De madrugada, exausto após um longo turno, ele precisa planejar a rota mais eficiente para buscar todos os alunos espalhados pela cidade 3D e levá-los à universidade. Cada tile percorrido consome combustível limitado, o cansaço progressivo escurece a visão, e no nível avançado alunos podem cancelar ou aparecer de última hora. O desafio é encontrar o menor caminho para economizar combustível e chegar em casa mais cedo para descansar.
+Rota — Fábio na Madrugada é um jogo de puzzle 3D em que o jogador assume o papel de Fábio Alves, motorista de van universitária de 52 anos em Engenheiro Beltrão — PR. De madrugada, exausto após um longo turno, ele precisa planejar a rota mais eficiente para buscar todos os alunos espalhados pela cidade 3D e levá-los à universidade. Cada tile percorrido consome combustível limitado, o cansaço progressivo escurece a visão, e no nível avançado alunos podem cancelar ou aparecer de última hora. O desafio é encontrar o menor caminho para economizar combustível e chegar em casa mais cedo para descansar.
 
 Este mini GDD complementa a primeira página do site publicada no GitHub Pages, explicando como o protótipo atende diretamente à persona e aos critérios da Sprint 2.
 
@@ -29,7 +29,7 @@ O jogo foi desenhado diretamente a partir das dores e necessidades da persona **
 | Gasta combustível em rotas ineficientes | Barra de combustível limitada que decresce a cada tile percorrido; rotas longas causam game over |
 | Sofre cansaço extremo na madrugada | Barra de energia que diminui com o tempo; a tela vai escurecendo progressivamente com efeito de vinheta |
 | Alunos confirmam/cancelam de última hora | Nível 3: eventos aleatórios onde alunos somem ou aparecem inesperadamente durante o planejamento |
-| Precisa de sistema que calcule a rota automaticamente | O jogador aprende por tentativa e erro que traçar a rota curta é essencial — vivenciando na prática a necessidade do RotaFácil |
+| Precisa de sistema que calcule a rota automaticamente | O jogador aprende por tentativa e erro que traçar a rota curta é essencial — vivenciando na prática a necessidade do sistema Rota |
 
 ---
 

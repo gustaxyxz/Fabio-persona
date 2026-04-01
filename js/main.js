@@ -1,5 +1,5 @@
 /* ===================================================
-  ROTALIZA — Main JS
+  ROTA — Main JS
   Particles, Scroll Reveal, Navbar Shrink, Counters
   =================================================== */
 

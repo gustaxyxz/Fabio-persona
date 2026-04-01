@@ -5,7 +5,7 @@ Esta pasta concentra os materiais de apoio para a entrega final.
 ## Conteúdo
 
 - ENTREGA.md: guia de entrega, GitHub, Pages e apresentação.
-- RotaLiza-Entrega.zip: arquivo compactado pronto para envio.
+- Rota-Entrega.zip: arquivo compactado pronto para envio.
 
 ## Uso
 

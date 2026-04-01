@@ -33,7 +33,7 @@
 1. Criar um repositório novo no GitHub.
 2. Enviar todos os arquivos da pasta do projeto para esse repositório.
 3. Confirmar que o index.html está na raiz do projeto.
-4. Fazer o primeiro commit com uma mensagem clara, como "Entrega Sprint 2 - RotaLiza".
+4. Fazer o primeiro commit com uma mensagem clara, como "Entrega Sprint 2 - Rota".
 
 ## Como colocar o site no ar
 
@@ -74,4 +74,4 @@
 
 ## Fala Curta Sugerida
 
-"Nosso projeto parte da persona Fábio Alves, motorista de van universitária que trabalha à noite e enfrenta dificuldade para lembrar rotas, controlar combustível e lidar com o cansaço. Criamos o RotaLiza, uma primeira página para apresentar esse contexto e um protótipo jogável que transforma esse problema em experiência interativa. O mini GDD organiza a visão do jogo, suas mecânicas e a relação direta com a persona. A entrega está pronta para ser publicada no GitHub Pages e enviada em ZIP, como a faculdade solicitou." 
+"Nosso projeto parte da persona Fábio Alves, motorista de van universitária que trabalha à noite e enfrenta dificuldade para lembrar rotas, controlar combustível e lidar com o cansaço. Criamos o Rota, uma primeira página para apresentar esse contexto e um protótipo jogável que transforma esse problema em experiência interativa. O mini GDD organiza a visão do jogo, suas mecânicas e a relação direta com a persona. A entrega está pronta para ser publicada no GitHub Pages e enviada em ZIP, como a faculdade solicitou." 
