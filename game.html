@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Rota 3D</title>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
   <style>
     :root {
       --c1: #2ed3ff;
@@ -291,6 +290,8 @@
 
     let modelLoadFailed = false;
     let cachedVanModel = null;
+    let GLTFLoaderCtor = null;
+    let gltfLoaderInitTried = false;
 
     let audioCtx = null;
     let engineGain = null;
@@ -349,6 +350,25 @@
       window.addEventListener("keyup", onKeyUp);
 
       setupMobileControls();
+      loadGLTFLoaderModule();
+    }
+
+    async function loadGLTFLoaderModule() {
+      if (gltfLoaderInitTried) return;
+      gltfLoaderInitTried = true;
+
+      try {
+        const mod = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js");
+        GLTFLoaderCtor = mod.GLTFLoader;
+
+        // Se a van fallback ja estiver em cena, tenta trocar pelo modelo real.
+        if (van && !modelLoadFailed) {
+          tryAttachVanModel();
+        }
+      } catch (err) {
+        modelLoadFailed = true;
+        showToast("Nao foi possivel carregar o modulo GLTFLoader");
+      }
     }
 
     function onResize() {
@@ -618,6 +638,8 @@
       van.rotation.y = 0;
       cityGroup.add(van);
 
+      // Mantem jogavel mesmo sem GLTFLoader: fallback aparece primeiro.
+      createVanFallback();
       tryAttachVanModel();
     }
 
@@ -710,23 +732,24 @@
         return;
       }
 
-      if (modelLoadFailed || !THREE.GLTFLoader) {
-        createVanFallback();
+      if (modelLoadFailed || !GLTFLoaderCtor) {
         return;
       }
 
-      const loader = new THREE.GLTFLoader();
+      const loader = new GLTFLoaderCtor();
       loader.load(
         "free-zuk-3d-model/source/zuk.glb",
         (gltf) => {
           cachedVanModel = gltf.scene;
           attachVanModel(cachedVanModel.clone(true));
+          showToast("Van 3D carregada com sucesso");
         },
         undefined,
-        () => {
+        (err) => {
           modelLoadFailed = true;
           createVanFallback();
-          showToast("Modelo da van em .blend: exporte para .glb para usar no jogo");
+          const msg = err && err.message ? err.message : "Erro ao carregar zuk.glb";
+          showToast(`Fallback ativo: ${msg}`);
         }
       );
     }
