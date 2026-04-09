@@ -69,12 +69,23 @@ function buildPreviewCards(cards) {
 }
 
 function updatePreviewVisibility(hasAccess) {
-  previewGrid.innerHTML = buildPreviewCards(hasAccess ? UNLOCKED_PREVIEW_CARDS : LOCKED_PREVIEW_CARDS);
+  previewGrid.innerHTML = buildPreviewCards(UNLOCKED_PREVIEW_CARDS);
   previewGrid.setAttribute("data-preview-state", hasAccess ? "unlocked" : "locked");
+
+  const cards = previewGrid.querySelectorAll(".preview-card");
+  cards.forEach(function (card) {
+    card.style.filter       = hasAccess ? "" : "blur(8px)";
+    card.style.userSelect   = hasAccess ? "" : "none";
+    card.style.pointerEvents = hasAccess ? "" : "none";
+  });
 
   ageGateStatus.textContent = hasAccess
     ? "Previa liberada. Conteudo sensivel visivel."
     : "Previa bloqueada ate validar a idade.";
+
+  if (hasAccess && typeof window.rotaInitGame === "function") {
+    window.rotaInitGame();
+  }
 }
 
 function validateAge() {

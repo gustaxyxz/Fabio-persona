@@ -414,6 +414,7 @@ label {
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 1rem;
+  transition: filter 0.4s ease;
 }
 
 .form {
@@ -521,7 +522,7 @@ input::placeholder {
 #game-map-wrap {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: 380px;
   background: color-mix(in srgb, var(--surface-soft) 60%, transparent);
   border: 1px solid var(--line);
   border-radius: 16px;
@@ -807,4 +808,283 @@ input::placeholder {
   .persona-photo {
     width: 400px;
   }
+}
+
+/* ─── Ícones de personagens nos nós ──────────────────────── */
+
+.node-icon {
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ─── Animações do jogo ───────────────────────────────────── */
+
+@keyframes nodePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+.node-pop .node-dot {
+  animation: nodePop 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#game-result:not([hidden]) {
+  animation: slideUp 0.3s ease;
+}
+
+/* ─── Contexto Fábio ──────────────────────────────────────── */
+
+#game-container {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  min-height: 120px;
+}
+
+#game-locked-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: var(--muted);
+  font-size: 1rem;
+  min-height: 120px;
+}
+
+#game-locked-msg span { font-size: 2rem; }
+#game-locked-msg p   { margin: 0; }
+
+#jogo-iframe {
+  display: block;
+  width: 100%;
+  height: 520px;
+  border: none;
+  border-radius: 16px;
+}
+
+#fabio-context {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+}
+
+.fabio-avatar {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.fabio-text {
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.fabio-text strong {
+  color: var(--text);
+  display: block;
+  font-size: 0.95rem;
+}
+
+/* ─── Canvas 2D e van sprite ──────────────────────────────── */
+
+#game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#van-sprite {
+  position: absolute;
+  font-size: 1.8rem;
+  line-height: 1;
+  transform: translate(-50%, -60%) scaleX(1);
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+}
+
+.node-icon-em {
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes vanBlink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.2; }
+}
+
+.van-blink {
+  animation: vanBlink 0.35s ease;
+}
+
+/* ─── Seletores g-* (game.js refatorado) ─────────────────── */
+
+#g-wrap { display:flex; flex-direction:column; gap:1rem; }
+
+#g-fabio {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+#g-fabio strong  { color: var(--text); display:block; font-size:0.95rem; }
+#g-van-ico       { font-size: 2rem; flex-shrink: 0; }
+
+#g-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+#g-title {
+  font-family: "League Spartan", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+#g-desc { color: var(--muted); font-size: 0.9rem; }
+
+#g-badges { display:flex; gap:0.4rem; align-items:center; flex-shrink:0; }
+.g-badge {
+  width: 2rem; height: 2rem; border-radius: 50%;
+  background: var(--surface-soft); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem; color: var(--muted);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.g-badge.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.g-badge.done   {
+  background: color-mix(in srgb, var(--accent-2) 20%, transparent);
+  border-color: var(--accent-2); color: var(--accent-2);
+}
+
+#g-map {
+  position: relative; width: 100%;
+  border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+  background: #060c1a;
+}
+#g-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none;
+}
+#g-nodes { position: absolute; inset: 0; }
+#g-van {
+  position: absolute; font-size: 1.8rem; line-height: 1;
+  transform: translate(-50%,-60%) scaleX(1);
+  z-index: 10; pointer-events: none; user-select: none;
+}
+.g-blink { animation: vanBlink 0.35s ease; }
+
+.g-node {
+  position: absolute; transform: translate(-50%,-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem; z-index: 1;
+}
+.g-inactive { opacity: 0.22; pointer-events: none; }
+.g-dot {
+  width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  background: var(--surface); border: 2.5px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.18s, background 0.18s, transform 0.18s;
+  position: relative;
+}
+.g-start .g-dot { border-color: var(--accent-2); background: color-mix(in srgb, var(--accent-2) 15%, var(--surface)); }
+.g-end   .g-dot { border-color: var(--accent);   background: color-mix(in srgb, var(--accent)   15%, var(--surface)); }
+.g-stop  .g-dot { border-color: var(--muted); cursor: pointer; }
+.g-stop:hover .g-dot { border-color: var(--accent); transform: scale(1.12); }
+.g-selected .g-dot {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
+.g-icon  { font-size: 1rem; line-height: 1; pointer-events: none; user-select: none; }
+.g-label {
+  font-size: 0.72rem; font-weight: 600; color: var(--muted); white-space: nowrap;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  padding: 0.1rem 0.35rem; border-radius: 6px;
+  pointer-events: none; user-select: none;
+}
+.g-order {
+  position: absolute; top: -0.5rem; right: -0.5rem;
+  width: 1.1rem; height: 1.1rem; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 0.65rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+
+@keyframes gPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+.g-pop .g-dot { animation: gPop 0.28s ease-out; }
+
+#g-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.8rem; flex-wrap: wrap;
+  background: var(--surface-soft); border: 1px solid var(--line);
+  border-radius: 14px; padding: 0.75rem 1rem;
+}
+#g-route-txt {
+  color: var(--muted); font-size: 0.9rem; font-weight: 600;
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#g-btns { display:flex; gap:0.5rem; flex-shrink:0; }
+
+#g-result {
+  background: var(--surface-soft); border: 1px solid var(--line);
+  border-radius: 16px; padding: 1.2rem;
+  display: flex; flex-direction: column; gap: 0.9rem;
+}
+#g-result:not([hidden]) { animation: slideUp 0.3s ease; }
+.g-res-icon { font-size: 2.2rem; line-height: 1; }
+.g-res-text { font-size: 1rem; color: var(--text); }
+.g-res-stats {
+  display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0.6rem;
+}
+.g-stat {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 0.6rem 0.8rem;
+}
+.g-stat span     { display:block; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); margin-bottom:0.2rem; }
+.g-stat strong   { font-size: 1rem; }
+.g-good strong   { color: var(--accent-2); }
+.g-bad  strong   { color: #f87171; }
+.g-res-btns      { display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center; }
+.g-hint          { font-size:0.85rem; color:var(--muted); margin-left:auto; }
+.g-hint summary  { cursor:pointer; color:var(--accent); font-weight:600; }
+.g-hint p        { margin-top:0.4rem; padding:0.5rem 0.75rem; background:var(--surface); border-radius:10px; border:1px solid var(--line); }
+
+@media (max-width: 680px) {
+  .g-res-stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  #g-bar { flex-direction:column; align-items:flex-start; }
+  #g-route-txt { white-space:normal; }
 }
