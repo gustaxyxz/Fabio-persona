@@ -1156,11 +1156,14 @@ input::placeholder {
 .g-pb[data-k="ArrowLeft"]  { grid-area: left;  }
 .g-pb[data-k="ArrowRight"] { grid-area: right; }
 
-/* Hint de controles */
+/* Barra de controle */
 #g-ctrl-bar {
-  font-size: 0.77rem; color: rgba(148,163,184,0.6);
-  text-align: center; padding: 0.15rem 0;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.6rem;
+  padding: 0.4rem 0;
+  font-size: 0.84rem; color: rgba(148,163,184,0.8);
 }
+.g-ctrl-btns { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
 /* Resultado */
 #g-result {
@@ -1170,7 +1173,15 @@ input::placeholder {
 }
 #g-result:not([hidden]) { animation: slideUp 0.3s ease; }
 .g-res-icon  { font-size: 2.5rem; line-height: 1; }
-.g-res-text  { font-size: 1rem; color: var(--text); }
+.g-res-title { font-size: 1rem; color: var(--text); }
+.g-res-route {
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.4rem; align-items: center;
+  font-weight: 600; font-size: 0.88rem;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 0.55rem 0.9rem;
+}
+.g-arr  { color: var(--muted); font-size: 0.78rem; }
+.g-rseg { font-weight: 700; }
 .g-res-stats {
   display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0.6rem;
 }
