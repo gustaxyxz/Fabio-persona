@@ -3,25 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rota - Contato</title>
+  <meta name="description" content="Contato e feedback sobre o sistema Rota de transporte universitário do Fábio.">
+  <title>Contato - Rota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="dark">
+  <header class="topbar">
+    <a class="brand" href="index.html">Rota</a>
+    <nav class="menu" aria-label="Navegação principal">
+      <a href="index.html">Início</a>
+      <a href="index.html#persona">Persona</a>
+      <a href="rotas.html">Rotas</a>
+      <a href="contato.html" aria-current="page">Contato</a>
+    </nav>
+    <div class="top-actions">
+      <button id="themeToggle" class="button button-ghost" type="button">Tema claro</button>
+    </div>
+  </header>
   <main class="page" id="inicio">
     <section class="hero section-card">
-      <p class="eyebrow">Pagina interna</p>
+      <p class="eyebrow">Página interna</p>
       <h1>Contato e feedback</h1>
       <p class="hero-text">
-        Canal para sugestoes e melhorias do sistema Rota usado no transporte universitario noturno.
+        Canal para sugestões e melhorias do sistema Rota, usado no transporte universitário noturno pelo Fábio Alves.
       </p>
-      <form class="form form-narrow section-top-gap">
+      <form class="form form-narrow section-top-gap" id="contactForm">
         <label for="nome">Nome</label>
         <input id="nome" type="text" placeholder="Seu nome">
         <label for="mensagem" class="label-top-gap">Mensagem</label>
         <input id="mensagem" type="text" placeholder="Descreva seu feedback">
+        <button class="button button-main" type="submit" style="margin-top:12px;">Enviar feedback</button>
+        <p id="contactMsg" class="message" style="margin-top:12px;"></p>
       </form>
-      <!-- Botão de voltar removido, página será excluída -->
+    </section>
+    <section class="section section-alt">
+      <div class="section-title">
+        <p class="eyebrow">Estrutura do sistema</p>
+        <h2>Páginas do site</h2>
+      </div>
+      <div class="cards four">
+        <article class="card"><h3>Início</h3><p>Persona, dor, solução e mini game.</p></article>
+        <article class="card"><h3>Rotas</h3><p>Lista de confirmados e ordem sugerida.</p></article>
+        <article class="card"><h3>Mini game</h3><p>Jogo dedicado na página dedicada.</p></article>
+        <article class="card"><h3>Contato</h3><p>Espaço para feedback e melhorias.</p></article>
+      </div>
     </section>
   </main>
+  <footer class="footer">
+    <p><strong>Rota</strong> — organização de embarques e revisão de endereços para trajetos noturnos.</p>
+  </footer>
+  <script>
+    // Tema claro/escuro isolado nesta página
+    const toggle = document.getElementById('themeToggle');
+    function syncLabel() {
+      toggle.textContent = document.body.dataset.theme === 'dark' ? 'Tema claro' : 'Tema escuro';
+    }
+    const saved = localStorage.getItem('rota-theme');
+    if (saved) document.body.dataset.theme = saved;
+    syncLabel();
+    toggle.addEventListener('click', function () {
+      document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('rota-theme', document.body.dataset.theme);
+      syncLabel();
+    });
+
+    // Feedback do formulário de contato
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nome = document.getElementById('nome').value.trim();
+      const msg = document.getElementById('mensagem').value.trim();
+      const out = document.getElementById('contactMsg');
+      if (!nome || !msg) {
+        out.textContent = 'Preencha nome e mensagem antes de enviar.';
+      } else {
+        out.textContent = 'Obrigado, ' + nome + '! Seu feedback foi recebido.';
+        document.getElementById('contactForm').reset();
+      }
+    });
+  </script>
 </body>
 </html>
