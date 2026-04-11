@@ -18,7 +18,11 @@
       <a href="#persona">Persona</a>
       <a href="#solucao">Solução</a>
       <a href="#historia">História</a>
+      <a href="#wireframe">Wireframe</a>
       <a href="#mini-game">Mini game</a>
+      <a href="rotas.html">Rotas</a>
+      <a href="contato.html">Contato</a>
+      <a href="#estrutura">Estrutura</a>
     </nav>
     <div class="top-actions">
       <button id="themeToggle" class="button button-ghost" type="button">Tema claro</button>
@@ -35,6 +39,7 @@
       </p>
       <div class="hero-actions">
         <a class="button button-main" href="#mini-game">Abrir mini game</a>
+        <a class="button button-ghost" href="rotas.html">Ver rotas</a>
       </div>
       <div class="hero-grid">
         <article><span>Persona</span><strong id="personaName">-</strong></article>

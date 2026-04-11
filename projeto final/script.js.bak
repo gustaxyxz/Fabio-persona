@@ -730,7 +730,7 @@ function setVanPose(van, fromPos, toPos, durationMs) {
   var legFlipOverride = van.dataset.legFlip ? Number(van.dataset.legFlip) : null;
   if (legFlipOverride !== null && heading.flip !== legFlipOverride) {
     heading.flip = legFlipOverride;
-    heading.angle = Math.max(-50, Math.min(50, normalizeAngle(rawAngle + VAN_HEADING_OFFSET_DEG)));
+    heading.angle = Math.max(-89, Math.min(89, normalizeAngle(rawAngle + VAN_HEADING_OFFSET_DEG)));
   }
   const visualTargetAngle = heading.angle * VAN_VISUAL_TILT_SCALE;
   const flipChanging = heading.flip !== currentFlip;
@@ -1377,7 +1377,7 @@ function updateRouteDisplay() {
   if (!display || !btnPartir) return;
   display.textContent = selectedRoute.length
     ? 'Ordem: ' + selectedRoute.map(function (stop, i) { return (i + 1) + '. ' + STUDENT_NAMES[stop]; }).join(' -> ') + ' -> Faculdade'
-    : 'Clique nos alunos para marcar a ordem de busca.';
+    : 'Clique nos alunos para marcar a ordem 1 -> 2 -> 3 -> ' + REQUIRED_STOPS;
   btnPartir.disabled = selectedRoute.length < REQUIRED_STOPS;
 
   if (!gameRunning) {
