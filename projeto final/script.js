@@ -49,7 +49,7 @@ function toggleTheme() {
 }
 
 function buildPreviewCards(cards) {
-  return cards.map(function(card) {
+  return cards.map(function (card) {
     return '<article class="preview-card"><h3>' + card.title + '</h3><p>' + card.description + '</p></article>';
   }).join("");
 }
@@ -60,10 +60,22 @@ function updatePreviewVisibility(hasAccess) {
 
   const cards = previewGrid.querySelectorAll(".preview-card");
   cards.forEach(function (card) {
-    card.style.filter       = hasAccess ? "" : "blur(8px)";
-    card.style.userSelect   = hasAccess ? "" : "none";
+    card.style.filter = hasAccess ? "" : "blur(8px)";
+    card.style.userSelect = hasAccess ? "" : "none";
     card.style.pointerEvents = hasAccess ? "" : "none";
   });
+
+  const gameContainer = document.getElementById('game-container');
+  if (gameContainer) {
+    gameContainer.style.filter = hasAccess ? "" : "blur(8px)";
+    gameContainer.style.userSelect = hasAccess ? "" : "none";
+    gameContainer.style.pointerEvents = hasAccess ? "" : "none";
+  }
+
+  const ageGateOverlay = document.getElementById('age-gate-overlay');
+  if (ageGateOverlay) {
+    ageGateOverlay.style.display = hasAccess ? "none" : "flex";
+  }
 
   ageGateStatus.textContent = hasAccess
     ? "Previa liberada. Conteudo sensivel visivel."
@@ -91,7 +103,6 @@ function validateAge() {
 
   if (age >= AGE_LIMIT) {
     alert("Acesso liberado ao conteudo sensivel do mini game.");
-    window.localStorage.setItem(AGE_GATE_KEY, '1');
     updatePreviewVisibility(true);
   } else {
     alert("Acesso negado ao conteudo sensivel do mini game.");
@@ -114,24 +125,18 @@ function showPersonalizedMessage(event) {
 
 function checkLaunchYear() {
   const currentYear = new Date().getFullYear();
-  const launchAlertKey = "grande-lancamento-2026-ja-visto";
 
   if (currentYear === GAME_RELEASE_YEAR) {
-    const hasSeenLaunchAlert = window.localStorage.getItem(launchAlertKey) === "1";
-
-    if (!hasSeenLaunchAlert) {
-      alert("Grande Lancamento: " + GAME_NAME + " - prototipo em nivel " + PREVIEW_LEVEL + ".");
-      window.localStorage.setItem(launchAlertKey, "1");
-    }
+    alert("Grande Lancamento: " + GAME_NAME + " - prototipo em nivel " + PREVIEW_LEVEL + ".");
   }
 }
 
 // --- DOM Game ---
 
 const STUDENT_NAMES = {
-  'Centro': 'Ana',
+  'Centro': 'André',
   'Paulo Grande': 'Bruno',
-  'Vila Nova': 'Carla',
+  'Vila Nova': 'Carlos',
   'Jardim America': 'Diego'
 };
 const ALL_STOPS = Object.keys(STUDENT_NAMES);
@@ -147,21 +152,14 @@ function cloneStopPositions(source) {
   }, {});
 }
 
-function cloneWaypointMap(source) {
-  return Object.keys(source).reduce(function (acc, legKey) {
-    acc[legKey] = (source[legKey] || []).map(function (point) {
-      return { top: point.top, left: point.left };
-    });
-    return acc;
-  }, {});
-}
+
 
 const DEFAULT_STOP_POSITIONS = {
-  'Garagem':        { top: '40.1%', left: '44.0%' },
-  'Faculdade':      { top: '47.6%', left: '69.7%' },
-  'Centro':         { top: '46.3%', left: '40.5%' },
-  'Paulo Grande':   { top: '34.6%', left: '56.7%' },
-  'Vila Nova':      { top: '70.6%', left: '49.7%' },
+  'Garagem': { top: '40.1%', left: '44.0%' },
+  'Faculdade': { top: '47.6%', left: '69.7%' },
+  'Centro': { top: '46.3%', left: '40.5%' },
+  'Paulo Grande': { top: '34.6%', left: '56.7%' },
+  'Vila Nova': { top: '70.6%', left: '49.7%' },
   'Jardim America': { top: '53.9%', left: '58.9%' }
 };
 
@@ -195,7 +193,7 @@ const LEG_STREETS = {
   'Faculdade>Jardim America': ['st-jardim-facul']
 };
 
-const DEFAULT_LEG_WAYPOINTS = {
+let LEG_WAYPOINTS = {
   'Garagem>Centro': [
     { top: '40.1%', left: '43.9%' },
     { top: '43.1%', left: '47.9%' },
@@ -230,16 +228,12 @@ const DEFAULT_LEG_WAYPOINTS = {
   ],
   'Centro>Vila Nova': [
     { top: '49.3%', left: '42.5%' },
-    { top: '54.1%', left: '36.0%' },
-    { top: '59.5%', left: '40.0%' },
-    { top: '61.0%', left: '44.0%' },
+    { top: '70.6%', left: '42.5%' },
     { top: '70.6%', left: '49.7%' }
   ],
   'Vila Nova>Centro': [
     { top: '70.6%', left: '49.7%' },
-    { top: '61.0%', left: '44.0%' },
-    { top: '59.5%', left: '40.0%' },
-    { top: '54.1%', left: '36.0%' },
+    { top: '70.6%', left: '42.5%' },
     { top: '49.3%', left: '42.5%' }
   ],
   'Paulo Grande>Jardim America': [
@@ -294,8 +288,6 @@ const DEFAULT_LEG_WAYPOINTS = {
   ]
 };
 
-let LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
-
 const MOVE_MS_PER_UNIT = 115;
 const MOVE_MIN_MS = 260;
 const MOVE_MAX_MS = 1500;
@@ -315,7 +307,7 @@ const EFFECT_GAIN_MULTIPLIER = 1.9;
 const MAX_EFFECT_GAIN = 0.16;
 const ENGINE_MASTER_GAIN = 0.07;
 
-const FUEL_PER_UNIT  = 0.5;
+const FUEL_PER_UNIT = 0.5;
 const SLEEP_PER_UNIT = 0.55;
 const HARD_MODE_INITIAL_FUEL = 62;
 const HARD_MODE_INITIAL_SLEEP = 22;
@@ -325,7 +317,7 @@ const ROUTE_TOOL_FUEL_MULTIPLIER = 0.42;
 const ROUTE_TOOL_SLEEP_MULTIPLIER = 0.38;
 
 let fuelCurrent = 100;
-let sleepMeter  = 0;
+let sleepMeter = 0;
 
 let selectedRoute = [];
 let gameRunning = false;
@@ -334,19 +326,6 @@ let routeToolEnabled = false;
 let manualDrawMode = false;
 let manualRouteNodes = [];
 
-const ROUTE_WAYPOINTS_KEY = 'rota-waypoints-overrides-v1';
-const routeEditorState = {
-  enabled: false,
-  editMode: 'lines',
-  activeLeg: Object.keys(DEFAULT_LEG_WAYPOINTS)[0],
-  draggingIndex: -1,
-  textarea: null,
-  statusEl: null,
-  legSelect: null,
-  mouseToggle: null,
-  modeSelect: null,
-  panelEl: null
-};
 
 function sleep(ms) {
   return new Promise(function (resolve) { setTimeout(resolve, ms); });
@@ -362,288 +341,7 @@ function normalizePercent(value) {
   return Math.min(100, Math.max(0, num));
 }
 
-function sanitizeWaypointMap(candidate) {
-  const out = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
 
-  Object.keys(DEFAULT_LEG_WAYPOINTS).forEach(function (legKey) {
-    const points = candidate && Array.isArray(candidate[legKey]) ? candidate[legKey] : null;
-    if (!points || !points.length) return;
-
-    const sanitized = points.map(function (point) {
-      if (!point || typeof point !== 'object') return null;
-      const top = normalizePercent(point.top);
-      const left = normalizePercent(point.left);
-      if (top === null || left === null) return null;
-      return {
-        top: top.toFixed(1) + '%',
-        left: left.toFixed(1) + '%'
-      };
-    }).filter(Boolean);
-
-    if (sanitized.length) out[legKey] = sanitized;
-  });
-
-  return out;
-}
-
-function loadWaypointsOverrides() {
-  try {
-    const raw = window.localStorage.getItem(ROUTE_WAYPOINTS_KEY);
-    if (!raw) {
-      LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
-      return;
-    }
-
-    const parsed = JSON.parse(raw);
-    LEG_WAYPOINTS = sanitizeWaypointMap(parsed);
-  } catch (err) {
-    LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
-  }
-}
-
-function persistWaypointsOverrides() {
-  window.localStorage.setItem(ROUTE_WAYPOINTS_KEY, JSON.stringify(LEG_WAYPOINTS));
-}
-
-function resetWaypointsOverrides() {
-  LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
-  window.localStorage.removeItem(ROUTE_WAYPOINTS_KEY);
-}
-
-function setEditorStatus(text) {
-  if (routeEditorState.statusEl) routeEditorState.statusEl.textContent = text;
-}
-
-function syncEditorTextarea() {
-  if (routeEditorState.textarea) {
-    routeEditorState.textarea.value = JSON.stringify(LEG_WAYPOINTS, null, 2);
-  }
-}
-
-function getWaypointEditorLayer() {
-  const map = document.getElementById('game-map');
-  if (!map) return null;
-  let layer = document.getElementById('waypoint-editor-layer');
-  if (!layer) {
-    layer = document.createElement('div');
-    layer.id = 'waypoint-editor-layer';
-    map.appendChild(layer);
-  }
-  return layer;
-}
-
-function updateWaypointFromPointer(clientX, clientY) {
-  const map = document.getElementById('game-map');
-  const points = LEG_WAYPOINTS[routeEditorState.activeLeg];
-  const idx = routeEditorState.draggingIndex;
-  if (!map || !points || idx < 0 || idx >= points.length) return;
-
-  const rect = map.getBoundingClientRect();
-  if (!rect.width || !rect.height) return;
-  const leftPct = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
-  const topPct = Math.min(100, Math.max(0, ((clientY - rect.top) / rect.height) * 100));
-
-  points[idx] = {
-    top: topPct.toFixed(1) + '%',
-    left: leftPct.toFixed(1) + '%'
-  };
-
-  ensureStreetSegments();
-  renderWaypointHandles();
-  syncEditorTextarea();
-}
-
-function renderWaypointHandles() {
-  const layer = getWaypointEditorLayer();
-  if (!layer) return;
-  layer.innerHTML = '';
-
-  if (!routeEditorState.enabled) return;
-
-  const points = LEG_WAYPOINTS[routeEditorState.activeLeg] || [];
-  points.forEach(function (point, index) {
-    const handle = document.createElement('button');
-    handle.type = 'button';
-    handle.className = routeEditorState.editMode === 'lines' ? 'line-endpoint-handle' : 'waypoint-handle';
-    handle.title = routeEditorState.activeLeg + (routeEditorState.editMode === 'lines' ? ' - ponta ' : ' - ponto ') + (index + 1);
-    handle.style.top = point.top;
-    handle.style.left = point.left;
-    handle.textContent = String(index + 1);
-
-    handle.addEventListener('pointerdown', function (event) {
-      if (gameRunning) return;
-      event.preventDefault();
-      routeEditorState.draggingIndex = index;
-      updateWaypointFromPointer(event.clientX, event.clientY);
-      setEditorStatus(
-        (routeEditorState.editMode === 'lines' ? 'Arrastando ponta ' : 'Arrastando ponto ') +
-        (index + 1) + ' de ' + routeEditorState.activeLeg + '.'
-      );
-    });
-
-    layer.appendChild(handle);
-  });
-}
-
-function updateMouseEditorMode() {
-  const map = document.getElementById('game-map');
-  const canEditWithMouse = routeEditorState.panelEl && routeEditorState.panelEl.open && routeEditorState.mouseToggle && routeEditorState.mouseToggle.checked;
-  routeEditorState.enabled = !!canEditWithMouse;
-  if (!routeEditorState.enabled) routeEditorState.draggingIndex = -1;
-  if (map) {
-    map.classList.toggle('is-editing-lines', routeEditorState.enabled && routeEditorState.editMode === 'lines');
-  }
-  renderWaypointHandles();
-}
-
-function buildWaypointsEditorPanel() {
-  const controls = document.getElementById('game-controls');
-  if (!controls || document.getElementById('route-waypoints-editor')) return;
-
-  const panel = document.createElement('details');
-  panel.id = 'route-waypoints-editor';
-  panel.className = 'route-editor';
-  panel.innerHTML = [
-    '<summary class="route-editor-summary">Ajustar rotas da van (waypoints)</summary>',
-    '<p class="route-editor-help">Edite os pontos de cada trecho no formato JSON. Use valores em porcentagem para alinhar a van na pista.</p>',
-    '<div class="route-editor-row">',
-    '<label class="route-editor-field" for="route-waypoints-leg">Trecho</label>',
-    '<select id="route-waypoints-leg" class="route-editor-select"></select>',
-    '</div>',
-    '<div class="route-editor-row">',
-    '<label class="route-editor-field" for="route-waypoints-mode">Modo</label>',
-    '<select id="route-waypoints-mode" class="route-editor-select">',
-    '<option value="lines" selected>Mover pontas da linha</option>',
-    '<option value="points">Mover pontos</option>',
-    '</select>',
-    '</div>',
-    '<label class="route-editor-mouse-toggle"><input id="route-waypoints-mouse" type="checkbox"> Editar com mouse</label>',
-    '<textarea id="route-waypoints-json" class="route-editor-textarea" spellcheck="false"></textarea>',
-    '<div class="route-editor-actions">',
-    '<button class="button button-app" id="route-waypoints-apply" type="button">Aplicar ajuste</button>',
-    '<button class="button button-app" id="route-draw-ideal" type="button">Desenhar melhor rota em verde</button>',
-    '<button class="button button-ghost" id="route-waypoints-reset" type="button">Resetar padrao</button>',
-    '</div>',
-    '<p id="route-waypoints-status" class="route-editor-status" aria-live="polite"></p>'
-  ].join('');
-
-  controls.insertAdjacentElement('afterend', panel);
-
-  const textarea = document.getElementById('route-waypoints-json');
-  const status = document.getElementById('route-waypoints-status');
-  const btnApply = document.getElementById('route-waypoints-apply');
-  const btnDrawIdeal = document.getElementById('route-draw-ideal');
-  const btnReset = document.getElementById('route-waypoints-reset');
-  const legSelect = document.getElementById('route-waypoints-leg');
-  const modeSelect = document.getElementById('route-waypoints-mode');
-  const mouseToggle = document.getElementById('route-waypoints-mouse');
-
-  Object.keys(DEFAULT_LEG_WAYPOINTS).forEach(function (legKey) {
-    const opt = document.createElement('option');
-    opt.value = legKey;
-    opt.textContent = legKey;
-    legSelect.appendChild(opt);
-  });
-
-  legSelect.value = routeEditorState.activeLeg;
-
-  routeEditorState.textarea = textarea;
-  routeEditorState.statusEl = status;
-  routeEditorState.legSelect = legSelect;
-  routeEditorState.modeSelect = modeSelect;
-  routeEditorState.mouseToggle = mouseToggle;
-  routeEditorState.panelEl = panel;
-  modeSelect.value = routeEditorState.editMode;
-
-  function renderEditorJson() {
-    textarea.value = JSON.stringify(LEG_WAYPOINTS, null, 2);
-  }
-
-  renderEditorJson();
-
-  btnApply.addEventListener('click', function () {
-    try {
-      const parsed = JSON.parse(textarea.value);
-      LEG_WAYPOINTS = sanitizeWaypointMap(parsed);
-      persistWaypointsOverrides();
-      ensureStreetSegments();
-      if (!gameRunning) resetGame();
-      renderEditorJson();
-      status.textContent = 'Ajustes aplicados e salvos';
-      renderWaypointHandles();
-      setGameFeedback('Waypoints atualizados.', 'good');
-    } catch (err) {
-      status.textContent = 'JSON invalido. Revise virgulas, aspas e chaves antes de aplicar.';
-      setGameFeedback('Nao foi possivel aplicar: JSON invalido no editor de waypoints.', 'bad');
-    }
-  });
-
-  btnReset.addEventListener('click', function () {
-    resetWaypointsOverrides();
-    ensureStreetSegments();
-    if (!gameRunning) resetGame();
-    renderEditorJson();
-    status.textContent = 'Waypoints resetados';
-    renderWaypointHandles();
-    document.querySelectorAll('.street-seg').forEach(function (seg) {
-      seg.classList.remove('manual-route');
-    });
-    setGameFeedback('Waypoints resetados.', '');
-  });
-
-  legSelect.addEventListener('change', function () {
-    routeEditorState.activeLeg = legSelect.value;
-    renderWaypointHandles();
-    setEditorStatus('Trecho selecionado: ' + routeEditorState.activeLeg + '.');
-  });
-
-  modeSelect.addEventListener('change', function () {
-    routeEditorState.editMode = modeSelect.value;
-    updateMouseEditorMode();
-    setEditorStatus(routeEditorState.editMode === 'lines'
-      ? 'Modo linha: arraste as pontas numeradas da linha para reposicionar a rota.'
-      : 'Modo ponto: arraste os pontos numerados.');
-  });
-
-  btnDrawIdeal.addEventListener('click', function () {
-    if (!routeToolEnabled || selectedRoute.length < REQUIRED_STOPS) {
-      setEditorStatus('Ative a ferramenta Rota ou selecione todos os alunos primeiro.');
-      return;
-    }
-    const ideal = bestOrderForSelection(selectedRoute);
-    const nodes = expandRouteNodes(ideal.order);
-    drawRouteManually(nodes);
-    const label = formatRouteLabel(ideal.order, true);
-    setEditorStatus('Rota ideal desenhada em verde no mapa: ' + label);
-    setGameFeedback('Rota ideal desenhada em verde. Teste com Partir para ver a van seguir esse caminho.', 'good');
-  });
-
-  mouseToggle.addEventListener('change', function () {
-    updateMouseEditorMode();
-    setEditorStatus(mouseToggle.checked
-      ? 'Modo mouse ativo. Arraste os pontos numerados sobre a pista.'
-      : 'Modo mouse desativado.');
-  });
-
-  panel.addEventListener('toggle', function () {
-    updateMouseEditorMode();
-  });
-
-  window.addEventListener('pointermove', function (event) {
-    if (routeEditorState.draggingIndex < 0) return;
-    updateWaypointFromPointer(event.clientX, event.clientY);
-  });
-
-  window.addEventListener('pointerup', function () {
-    if (routeEditorState.draggingIndex < 0) return;
-    routeEditorState.draggingIndex = -1;
-    persistWaypointsOverrides();
-    setEditorStatus('Ajuste salvo. Continue arrastando linhas/pontos ou teste a rota.');
-    setGameFeedback('Ajuste salvo com mouse. Teste clicando em Calcular Rota Ideal e Partir.', 'good');
-  });
-
-  updateMouseEditorMode();
-}
 
 function vanAngle(fromPos, toPos) {
   const dx = percentNumber(toPos.left) - percentNumber(fromPos.left);
@@ -725,7 +423,7 @@ function densifyWaypoints(startPos, waypoints, maxStepDist) {
 function setVanPose(van, fromPos, toPos, durationMs) {
   const rawAngle = vanAngle(fromPos, toPos);
   const currentAngle = Number(van.dataset.angle || '0');
-  const currentFlip  = Number(van.dataset.flip  || '1');
+  const currentFlip = Number(van.dataset.flip || '1');
   const heading = uprightHeading(rawAngle + VAN_HEADING_OFFSET_DEG);
   var legFlipOverride = van.dataset.legFlip ? Number(van.dataset.legFlip) : null;
   if (legFlipOverride !== null && heading.flip !== legFlipOverride) {
@@ -966,18 +664,18 @@ function bestOrderForSelection(selection) {
 
 function applyOptimalRoute() {
   if (gameRunning) return;
-  
+
   // Carrega rota desenhada do localStorage se existir
   if (_routeDrawPoints.length < 2) _loadDrawnRoute();
-  
+
   if (_routeDrawPoints.length >= 2) {
     // Tem rota desenhada - ativa e mostra em verde
     applyManualRoute();
     routeToolEnabled = true;
-    
+
     const best = bestOrderForSelection(ALL_STOPS.slice());
     selectedRoute = best.order.slice();
-    
+
     document.querySelectorAll('.map-point').forEach(function (btn) {
       btn.classList.remove('selected', 'collected', 'ordered');
       btn.removeAttribute('data-order');
@@ -988,13 +686,13 @@ function applyOptimalRoute() {
         btn.setAttribute('data-order', String(idx + 1));
       }
     });
-    
+
     updateRouteDisplay();
     setGameFeedback('Ferramenta Rota ativada! Linha verde mostra o melhor caminho. Menos cansaco e menor gasto de combustivel nesta corrida.', 'good');
     playSelectSound();
     return;
   }
-  
+
   // Sem rota desenhada - aplica a rota ideal calculada
   const best = bestOrderForSelection(ALL_STOPS.slice());
   selectedRoute = best.order.slice();
@@ -1068,10 +766,10 @@ function _saveDrawnRoute() {
   if (!map || !_routeDrawPoints.length) return;
   var w = map.offsetWidth;
   var h = map.offsetHeight;
-  var pcts = _routeDrawPoints.map(function(p) {
+  var pcts = _routeDrawPoints.map(function (p) {
     return { xPct: p.x / w * 100, yPct: p.y / h * 100 };
   });
-  try { localStorage.setItem(ROUTE_DRAW_KEY, JSON.stringify(pcts)); } catch(e) {}
+  try { localStorage.setItem(ROUTE_DRAW_KEY, JSON.stringify(pcts)); } catch (e) { }
 }
 
 function _loadDrawnRoute() {
@@ -1084,11 +782,11 @@ function _loadDrawnRoute() {
     if (!map) return false;
     var w = map.offsetWidth;
     var h = map.offsetHeight;
-    _routeDrawPoints = pcts.map(function(p) {
+    _routeDrawPoints = pcts.map(function (p) {
       return { x: p.xPct * w / 100, y: p.yPct * h / 100 };
     });
     return true;
-  } catch(e) { return false; }
+  } catch (e) { return false; }
 }
 
 function _getOrCreateRouteSvg() {
@@ -1118,7 +816,7 @@ function _redrawRouteSvg(previewPt) {
     return;
   }
   // linha
-  var pts = all.map(function(p){ return p.x + ',' + p.y; }).join(' ');
+  var pts = all.map(function (p) { return p.x + ',' + p.y; }).join(' ');
   var pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
   pl.setAttribute('points', pts);
   pl.setAttribute('fill', 'none');
@@ -1129,7 +827,7 @@ function _redrawRouteSvg(previewPt) {
   pl.setAttribute('stroke-dasharray', previewPt ? '7 5' : 'none');
   svg.appendChild(pl);
   // pontos fixos
-  _routeDrawPoints.forEach(function(p, i){
+  _routeDrawPoints.forEach(function (p, i) {
     _svgDot(svg, p, i === 0);
   });
 }
@@ -1145,67 +843,13 @@ function _svgDot(svg, p, isFirst) {
   svg.appendChild(c);
 }
 
-function _onDrawMouseMove(evt) {
-  if (!manualDrawMode) return;
-  _redrawRouteSvg(_svgPtFromEvent(evt));
-}
 
-function _onDrawClick(evt) {
-  if (!manualDrawMode) return;
-  evt.stopPropagation();
-  var pt = _svgPtFromEvent(evt);
-  _routeDrawPoints.push(pt);
-  _redrawRouteSvg(null);
-  setGameFeedback('Ponto ' + _routeDrawPoints.length + ' adicionado. Continue clicando para traçar. Clique em Terminar Desenho para finalizar.', '');
-}
-
-function startManualRouteDrawing() {
-  manualDrawMode = true;
-  _routeDrawPoints = [];
-  var btn = document.getElementById('btn-desenhar-rota');
-  if (btn) btn.textContent = 'Terminar Desenho';
-  var map = document.getElementById('game-map');
-  map.style.cursor = 'crosshair';
-  // limpa svg anterior
-  var svg = _getOrCreateRouteSvg();
-  svg.innerHTML = '';
-  svg.style.pointerEvents = 'auto';
-  if (!_routeDrawBound) {
-    map.addEventListener('click', _onDrawClick);
-    map.addEventListener('mousemove', _onDrawMouseMove);
-    _routeDrawBound = true;
-  }
-  setGameFeedback('Clique no mapa para adicionar pontos. A linha verde vai esticando conforme você clica. Clique em Terminar Desenho quando acabar.', 'info');
-}
-
-function finishManualRouteDrawing() {
-  manualDrawMode = false;
-  var btn = document.getElementById('btn-desenhar-rota');
-  if (btn) btn.textContent = _routeDrawPoints.length > 1 ? 'Redesenhar Rota' : 'Desenhar Rota';
-  var map = document.getElementById('game-map');
-  map.style.cursor = 'default';
-  map.removeEventListener('click', _onDrawClick);
-  map.removeEventListener('mousemove', _onDrawMouseMove);
-  _routeDrawBound = false;
-  if (_routeDrawSvg) _routeDrawSvg.style.pointerEvents = 'none';
-  _redrawRouteSvg(null);
-  if (_routeDrawPoints.length > 1) {
-    _saveDrawnRoute();
-    // Esconde a linha verde até o jogador usar a ferramenta Rota
-    if (_routeDrawSvg) _routeDrawSvg.style.display = 'none';
-    setGameFeedback('Rota salva com ' + _routeDrawPoints.length + ' pontos! A linha verde aparecerá quando o jogador usar a Ferramenta Rota.', 'good');
-  }
-}
 
 function applyManualRoute() {
-  // Carrega a rota salva se nao tem pontos em memória
   if (_routeDrawPoints.length < 2) _loadDrawnRoute();
-  // Mostra o SVG verde que foi desenhado manualmente
-  if (_routeDrawPoints.length >= 2 && _routeDrawSvg) {
-    _routeDrawSvg.style.display = 'block';
-    _redrawRouteSvg(null);
-  } else if (_routeDrawPoints.length >= 2) {
-    _getOrCreateRouteSvg();
+  if (_routeDrawPoints.length >= 2) {
+    var svg = _getOrCreateRouteSvg();
+    svg.style.display = 'block';
     _redrawRouteSvg(null);
   }
 }
@@ -1386,7 +1030,7 @@ function updateRouteDisplay() {
     } else if (selectedRoute.length < REQUIRED_STOPS) {
       setGameFeedback('Marcado ' + selectedRoute.length + ' de ' + REQUIRED_STOPS + '. Clique novamente em um nome para desmarcar, se precisar.', '');
     } else {
-      setGameFeedback('Ordem definida: ' + selectedRoute.map(function (s, i) { return (i+1)+'.'+STUDENT_NAMES[s]; }).join(' ') + '. Clique em Partir!', 'good');
+      setGameFeedback('Ordem definida: ' + selectedRoute.map(function (s, i) { return (i + 1) + '.' + STUDENT_NAMES[s]; }).join(' ') + '. Clique em Partir!', 'good');
     }
   }
 }
@@ -1448,23 +1092,20 @@ function resetGame() {
   routeToolEnabled = false;
   gameRunning = false;
   manualDrawMode = false;
-  
+
   // limpa SVG de desenho (esconde, mas nao apaga pontos salvos)
   var map = document.getElementById('game-map');
   if (map) {
-    map.removeEventListener('click', _onDrawClick);
-    map.removeEventListener('mousemove', _onDrawMouseMove);
     map.style.cursor = 'default';
   }
-  _routeDrawBound = false;
-  if (_routeDrawSvg) { _routeDrawSvg.style.display = 'none'; _routeDrawSvg.innerHTML = ''; }
-  
-  const van    = document.getElementById('van-icon');
+  if (_routeDrawSvg) { _routeDrawSvg.style.display = 'none'; }
+
+  const van = document.getElementById('van-icon');
   const resetBtn = document.getElementById('btn-reset-route');
   stopEngineLoop();
   syncStopPositionsToDom();
   setFacultyArrived(false);
-  if (van)    {
+  if (van) {
     van.style.transition = 'none';
     van.style.top = STOP_POSITIONS['Garagem'].top;
     van.style.left = STOP_POSITIONS['Garagem'].left;
@@ -1472,10 +1113,10 @@ function resetGame() {
     van.dataset.flip = '1';
     van.style.transform = buildVanTransform(0, 1);
   }
-  if (map)    map.classList.remove('is-driving');
+  if (map) map.classList.remove('is-driving');
   const overlay = document.getElementById('game-overlay');
   if (overlay) { overlay.hidden = true; overlay.innerHTML = ''; overlay.className = 'game-overlay'; }
-  if (resetBtn)  resetBtn.disabled = false;
+  if (resetBtn) resetBtn.disabled = false;
   document.querySelectorAll('.map-point').forEach(function (btn) {
     btn.classList.remove('selected', 'collected');
     btn.classList.remove('is-boarding');
@@ -1489,7 +1130,7 @@ function resetGame() {
     seg.classList.remove('selected', 'traversed', 'manual-route');
   });
   const btn = document.getElementById('btn-rota-otima');
-  if (btn) btn.textContent = 'Calcular Rota Ideal';
+  if (btn) btn.textContent = 'Usar Ferramenta Rota';
   setGameFeedback('Selecione quais alunos vao embarcar e em qual ordem. Depois clique em Partir.', '');
   updateRouteDisplay();
 }
@@ -1502,7 +1143,7 @@ async function startRoute() {
   const sleepPerUnit = SLEEP_PER_UNIT * (routeAssistActive ? ROUTE_TOOL_SLEEP_MULTIPLIER : HARD_MODE_SLEEP_MULTIPLIER);
 
   fuelCurrent = routeAssistActive ? 100 : HARD_MODE_INITIAL_FUEL;
-  sleepMeter  = routeAssistActive ? 0 : HARD_MODE_INITIAL_SLEEP;
+  sleepMeter = routeAssistActive ? 0 : HARD_MODE_INITIAL_SLEEP;
 
   const van = document.getElementById('van-icon');
   const map = document.getElementById('game-map');
@@ -1519,7 +1160,7 @@ async function startRoute() {
 
   function updateHud() {
     var fuel = Math.max(0, Math.round(fuelCurrent));
-    var slp  = Math.min(100, Math.round(sleepMeter));
+    var slp = Math.min(100, Math.round(sleepMeter));
     hudFuelBar.style.width = fuel + '%';
     hudFuelVal.textContent = fuel + '%';
     hudSleepBar.style.width = slp + '%';
@@ -1548,32 +1189,35 @@ async function startRoute() {
     const stop = expandedNodes[i];
     const legKey = getLegKey(prev, stop);
     const rawWaypoints = LEG_WAYPOINTS[legKey] || [STOP_POSITIONS[stop]];
-    var legEnd = rawWaypoints[rawWaypoints.length - 1];
-    van.dataset.legFlip = String(uprightHeading(vanAngle(prevPos, legEnd) + VAN_HEADING_OFFSET_DEG).flip);
-    const waypoints = densifyWaypoints(prevPos, rawWaypoints, VAN_CURVE_STEP);
     setStreetState('traversed', prev, stop);
 
-    for (let step = 0; step < waypoints.length && !routeAborted; step++) {
-      const pos = waypoints[step];
-      const stepDist = pointDistance(prevPos, pos);
-      fuelCurrent -= fuelPerUnit * stepDist;
-      sleepMeter  += sleepPerUnit * stepDist;
-      updateHud();
+    for (let r = 0; r < rawWaypoints.length && !routeAborted; r++) {
+      const segEnd = rawWaypoints[r];
+      van.dataset.legFlip = String(uprightHeading(vanAngle(prevPos, segEnd) + VAN_HEADING_OFFSET_DEG).flip);
+      const waypoints = densifySegment(prevPos, segEnd, VAN_CURVE_STEP);
 
-      if (fuelCurrent <= 0) {
-        routeAborted = 'fuel';
-        break;
-      }
-      if (sleepMeter >= 100) {
-        routeAborted = 'sleep';
-        break;
-      }
+      for (let step = 0; step < waypoints.length && !routeAborted; step++) {
+        const pos = waypoints[step];
+        const stepDist = pointDistance(prevPos, pos);
+        fuelCurrent -= fuelPerUnit * stepDist;
+        sleepMeter += sleepPerUnit * stepDist;
+        updateHud();
 
-      const travelMs = stepDurationMs(prevPos, pos, sleepMeter / 100);
-      setVanPose(van, prevPos, pos, travelMs);
-      await sleep(travelMs);
-      prevPos = pos;
-      await tryCollectStudentsAtPosition(pos, collectedStops);
+        if (fuelCurrent <= 0) {
+          routeAborted = 'fuel';
+          break;
+        }
+        if (sleepMeter >= 100) {
+          routeAborted = 'sleep';
+          break;
+        }
+
+        const travelMs = stepDurationMs(prevPos, pos, sleepMeter / 100);
+        setVanPose(van, prevPos, pos, travelMs);
+        await sleep(travelMs);
+        prevPos = pos;
+        await tryCollectStudentsAtPosition(pos, collectedStops);
+      }
     }
 
     if (routeAborted) break;
@@ -1613,10 +1257,10 @@ function showGameResult(forceLoss) {
   const delta = chosenDistance - best.distance;
   const routeCost = (chosenDistance / 10).toFixed(1);
   const bestCost = (best.distance / 10).toFixed(1);
-  const fuelFinal  = Math.max(0, Math.round(fuelCurrent));
+  const fuelFinal = Math.max(0, Math.round(fuelCurrent));
   const sleepFinal = Math.min(100, Math.round(sleepMeter));
   const routeLabel = formatRouteLabel(chosenOrder, false);
-  const bestLabel  = formatRouteLabel(best.order, false);
+  const bestLabel = formatRouteLabel(best.order, false);
 
   const aborted = forceLoss === 'fuel' || forceLoss === 'sleep';
   const won = !aborted && delta <= 0.4;
@@ -1628,25 +1272,25 @@ function showGameResult(forceLoss) {
 
   var icon, title, subtitle, desc;
   if (forceLoss === 'fuel') {
-    icon     = '&#9888;';
-    title    = 'Combustivel acabou!';
+    icon = '&#9888;';
+    title = 'Combustivel acabou!';
     subtitle = 'A van parou no meio da rota. Fabio nao chegou a Faculdade.';
-    desc     = 'A ordem escolhida consumiu combustivel demais. Melhor ordem: ' + bestLabel + '.';
+    desc = 'A ordem escolhida consumiu combustivel demais. Melhor ordem: ' + bestLabel + '.';
   } else if (forceLoss === 'sleep') {
-    icon     = 'ZZZ';
-    title    = 'Fabio dormiu ao volante!';
+    icon = 'ZZZ';
+    title = 'Fabio dormiu ao volante!';
     subtitle = 'A van parou no meio da rota. Rota longa demais deixou Fabio sonolento.';
-    desc     = 'A ordem escolhida causou sonolencia excessiva. Melhor ordem: ' + bestLabel + '.';
+    desc = 'A ordem escolhida causou sonolencia excessiva. Melhor ordem: ' + bestLabel + '.';
   } else if (won) {
-    icon     = 'OK';
-    title    = 'Rota otimizada!';
+    icon = 'OK';
+    title = 'Rota otimizada!';
     subtitle = 'Fabio pegou todos os alunos e chegou bem na Faculdade.';
-    desc     = 'Voce escolheu a menor rota possivel para os alunos selecionados.';
+    desc = 'Voce escolheu a menor rota possivel para os alunos selecionados.';
   } else {
-    icon     = '!';
-    title    = 'Rota ineficiente';
+    icon = '!';
+    title = 'Rota ineficiente';
     subtitle = 'Fabio chegou, mas poderia ter ido mais rapido por outra ordem.';
-    desc     = 'Sua ordem: ' + routeLabel + '. Melhor ordem: ' + bestLabel + '.';
+    desc = 'Sua ordem: ' + routeLabel + '. Melhor ordem: ' + bestLabel + '.';
   }
 
   overlay.innerHTML = [
@@ -1692,9 +1336,7 @@ function initDomGame() {
   if (gameInitialized) { resetGame(); return; }
   gameInitialized = true;
 
-  loadWaypointsOverrides();
   ensureStreetSegments();
-  buildWaypointsEditorPanel();
 
   resetGame();
 
@@ -1723,17 +1365,6 @@ function initDomGame() {
   document.getElementById('btn-partir').addEventListener('click', startRoute);
   document.getElementById('btn-reset-route').addEventListener('click', resetGame);
   document.getElementById('btn-rota-otima').addEventListener('click', applyOptimalRoute);
-
-  var btnDesenhar = document.getElementById('btn-desenhar-rota');
-  if (btnDesenhar) {
-    btnDesenhar.addEventListener('click', function () {
-      if (manualDrawMode) {
-        finishManualRouteDrawing();
-      } else {
-        startManualRouteDrawing();
-      }
-    });
-  }
 }
 
 // --- Inicializacao ---
@@ -1741,8 +1372,7 @@ function initDomGame() {
 function initializePage() {
   injectStaticData();
   updateThemeButtonLabel();
-  const alreadyValidated = window.localStorage.getItem(AGE_GATE_KEY) === '1';
-  updatePreviewVisibility(alreadyValidated);
+  updatePreviewVisibility(false);
   checkLaunchYear();
   initDomGame();
 

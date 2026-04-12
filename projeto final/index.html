@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Rota ajuda na organização de alunos e revisão de endereços antes da rota noturna.">
+  <meta name="description" content="Rota ajuda na organização de alunos e revisão de endereços.">
   <title>Rota</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,6 @@
     <nav class="menu" aria-label="Navegação principal">
       <a href="#persona">Persona</a>
       <a href="#solucao">Solução</a>
-      <a href="rotas.html">Rotas</a>
       <a href="#mini-game">Mini game</a>
       <a href="contato.html">Contato</a>
     </nav>
@@ -28,11 +27,11 @@
   </header>
   <main class="page" id="inicio">
     <section class="hero section-card">
-      <p class="eyebrow">Organização de rota noturna</p>
+      <p class="eyebrow">Organização de rota</p>
       <h1>Rota — o app do Fábio para nunca mais errar o caminho.</h1>
       <p class="hero-text">
-        Fábio Alves é motorista de transporte universitário noturno.
-        O site organiza os alunos confirmados e ajuda a encontrar o menor caminho até a faculdade.
+        Fábio Alves é motorista de transporte universitário.
+        O app organiza os alunos confirmados e ajuda a encontrar o menor caminho até a faculdade.
       </p>
       <div class="hero-actions">
         <a class="button button-main" href="#mini-game">Abrir mini game</a>
@@ -79,9 +78,9 @@
         <h2>Fluxo simples para escolher o menor caminho</h2>
       </div>
       <div class="cards three">
-        <article class="card card-step"><span class="step-num">01</span><h3>Lista de confirmados</h3><p>Mostra quem vai e quem não vai para reduzir erro antes da partida.</p></article>
-        <article class="card card-step"><span class="step-num">02</span><h3>Ordem de embarque</h3><p>Organiza os pontos de coleta para reduzir voltas desnecessárias.</p></article>
-        <article class="card card-step"><span class="step-num">03</span><h3>Mini game de rota</h3><p>O jogador encontra o menor caminho para levar ou buscar os alunos dos seus endereços até a faculdade.</p></article>
+        <article class="card card-step"><span class="step-num">01</span><h3>Mapa Interativo</h3><p>Exibe os endereços visualmente com as ruas mapeadas, resolvendo a dor de esquecer o trajeto dos alunos.</p></article>
+        <article class="card card-step"><span class="step-num">02</span><h3>Cálculo de Rota</h3><p>A Ferramenta Rota sugere matematicamente a melhor ordem de embarque para zerar o gasto com combustível extra.</p></article>
+        <article class="card card-step"><span class="step-num">03</span><h3>Mini game Tático</h3><p>Simula o desgaste e o sono na viagem para forçar a tomada de decisão rápida e inteligente antes de partir.</p></article>
       </div>
     </section>
     <section id="historia" class="section section-alt">
@@ -91,10 +90,11 @@
       </div>
       <div class="cards three">
         <article class="card"><h3>Enredo</h3><p>Fábio Alves precisa sair da garagem, buscar os alunos confirmados e chegar à faculdade antes do horário da aula, economizando combustível no trajeto.</p></article>
-        <article class="card"><h3>Conflito</h3><p>Além de escolher a melhor sequência de embarque, Fábio luta contra o cansaço e a narcolepsia, o que pode atrasar a viagem se o jogador não agir rápido.</p></article>
-        <article class="card"><h3>Objetivo do projeto</h3><p>Transformar um problema real de transporte universitário em um mini game com lógica, cenário, personagens, animação e tomada de decisão.</p></article>
+        <article class="card"><h3>Conflito</h3><p>Além de escolher a melhor sequência de embarque, Fábio luta contra o cansaço e a narcolepsia, o que pode atrasar a viagem se o jogador não escolher a melhor rota.</p></article>
+        <article class="card"><h3>Objetivo do projeto</h3><p>Transformar um problema real de transporte universitário em um mini game que apresenta uma solução real, com lógica, cenário, personagens, animação e tomada de decisão.</p></article>
       </div>
     </section>
+
     <section id="mini-game" class="section section-card">
       <div class="section-title">
         <p class="eyebrow">Mini game</p>
@@ -103,19 +103,21 @@
       </div>
       <p id="ageGateStatus" class="status">Prévia bloqueada até validar a idade.</p>
       <div id="previewGrid" class="preview-grid" data-sensitive="true" aria-live="polite"></div>
-      <div id="game-container" aria-live="polite">
-        <div id="game-ui">
-          <p class="game-instruction">Selecione os alunos que vao embarcar e defina a ordem da busca clicando nos nomes. A van segue pelas ruas do mapa e depois vai para a Faculdade.</p>
+      
+      <div style="position: relative;">
+        <div id="game-container" aria-live="polite">
+          <div id="game-ui">
+            <p class="game-instruction">Selecione os alunos que vao embarcar e defina a ordem da busca clicando nos nomes. A van segue pelas ruas do mapa e depois vai para a Faculdade.</p>
           <div id="game-map" class="game-map">
             <div id="street-layer" aria-hidden="true"></div>
-            <button class="stop-btn map-point" id="pt-centro" data-stop="Centro" data-student="Ana" type="button" title="Ana - Centro">
-              <span class="student-tag"><span class="stop-label">Ana</span></span>
+            <button class="stop-btn map-point" id="pt-centro" data-stop="Centro" data-student="André" type="button" title="André - Centro">
+              <span class="student-tag"><span class="stop-label">André</span></span>
             </button>
             <button class="stop-btn map-point" id="pt-paulo" data-stop="Paulo Grande" data-student="Bruno" type="button" title="Bruno - Paulo Grande">
               <span class="student-tag"><span class="stop-label">Bruno</span></span>
             </button>
-            <button class="stop-btn map-point" id="pt-vila" data-stop="Vila Nova" data-student="Carla" type="button" title="Carla - Vila Nova">
-              <span class="student-tag"><span class="stop-label">Carla</span></span>
+            <button class="stop-btn map-point" id="pt-vila" data-stop="Vila Nova" data-student="Carlos" type="button" title="Carlos - Vila Nova">
+              <span class="student-tag"><span class="stop-label">Carlos</span></span>
             </button>
             <button class="stop-btn map-point" id="pt-jardim" data-stop="Jardim America" data-student="Diego" type="button" title="Diego - Jardim America">
               <span class="student-tag"><span class="stop-label">Diego</span></span>
@@ -141,18 +143,20 @@
             </div>
           </div>
           <div id="game-controls">
-            <span id="route-display">Rota: nenhum ponto escolhido ainda</span>
+            <span id="route-display">Selecione a ordem dos alunos e inicie a rota</span>
             <div id="game-btn-row">
-              <button class="button button-app"   id="btn-rota-otima"  type="button" title="Usar a ferramenta Rota para mostrar o melhor caminho">Usar Ferramenta Rota</button>
-              <button class="button button-ghost" id="btn-desenhar-rota" type="button" title="Desenhar a melhor rota verde no mapa (dev)">Desenhar Rota</button>
-              <button class="button button-ghost" id="btn-reset-route" type="button">Limpar rota</button>
-              <button class="button button-main"  id="btn-partir"      type="button" disabled>Partir</button>
+              <button class="button button-app"   id="btn-rota-otima"    type="button" title="Usar a ferramenta Rota para mostrar o melhor caminho">Usar Ferramenta Rota</button>
+              <button class="button button-ghost" id="btn-reset-route"   type="button">Limpar rota</button>
+              <button class="button button-main"  id="btn-partir"        type="button" disabled>Partir</button>
             </div>
           </div>
           <p id="game-feedback" class="game-feedback">Planeje a rota clicando nos alunos do mapa. As ruas escolhidas ficam marcadas em verde.</p>
         </div>
       </div>
-      <p class="status"><a class="button button-ghost" href="jogo/index.html">Abrir página dedicada do mini game</a></p>
+      <div id="age-gate-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); color: white; font-size: 1.5rem; font-weight: bold; pointer-events: none; z-index: 1; border-radius: 12px;">
+        <span>Valide sua idade para iniciar o game</span>
+      </div>
+    </div>
     </section>
     <section id="interacao" class="section">
       <div class="section-title">
@@ -172,9 +176,9 @@
       <div class="section-title">
         <p class="eyebrow">Rabisco das telas</p>
         <h2>Wireframe simples para apresentação</h2>
-        <p>Este rabisco resume as três telas principais do projeto e deixa claro o fluxo de navegação para a avaliação.</p>
+        <p>Este rabisco resume as duas telas principais do projeto e deixa claro o fluxo de navegação para a avaliação.</p>
       </div>
-      <div class="cards three wireframe-grid">
+      <div class="cards two wireframe-grid">
         <article class="card">
           <h3>Página inicial</h3>
           <div class="wireframe-box">
@@ -191,20 +195,7 @@
           </div>
           <p>Apresenta persona, problema, solução, mini game e as ações principais do sistema.</p>
         </article>
-        <article class="card">
-          <h3>Página de rotas</h3>
-          <div class="wireframe-box">
-            <div class="wireframe-row">
-              <span class="wireframe-pill"></span>
-            </div>
-            <div class="wireframe-main wireframe-main-short"></div>
-            <div class="wireframe-columns single">
-              <div class="wireframe-side"></div>
-            </div>
-            <div class="wireframe-footer"></div>
-          </div>
-          <p>Mostra a rota sugerida, o objetivo do trajeto e o atalho para voltar ao mini game.</p>
-        </article>
+
         <article class="card">
           <h3>Página de contato</h3>
           <div class="wireframe-box">
@@ -225,10 +216,8 @@
         <p class="eyebrow">Estrutura do sistema</p>
         <h2>Páginas internas do site</h2>
       </div>
-      <div class="cards four">
+      <div class="cards two">
         <article class="card"><h3>Início</h3><p>Persona, dor e proposta.</p></article>
-        <article class="card"><h3>Rotas</h3><p>Lista de confirmados e ordem sugerida.</p></article>
-        <article class="card"><h3>Mini game</h3><p>Página dedicada ao jogo.</p></article>
         <article class="card"><h3>Contato</h3><p>Espaço para feedback e melhorias.</p></article>
       </div>
     </section>
