@@ -697,7 +697,13 @@ function applyOptimalRoute() {
   const best = bestOrderForSelection(ALL_STOPS.slice());
   selectedRoute = best.order.slice();
   routeToolEnabled = true;
-  drawRouteManually(expandRouteNodes(selectedRoute));
+
+  // Prioriza desenho manual se existir
+  if (_routeDrawPoints.length >= 2) {
+    applyManualRoute();
+  } else {
+    drawRouteManually(expandRouteNodes(selectedRoute));
+  }
 
   document.querySelectorAll('.map-point').forEach(function (btn) {
     btn.classList.remove('selected', 'collected', 'ordered');
@@ -1366,6 +1372,40 @@ function initDomGame() {
   document.getElementById('btn-partir').addEventListener('click', startRoute);
   document.getElementById('btn-reset-route').addEventListener('click', resetGame);
   document.getElementById('btn-rota-otima').addEventListener('click', applyOptimalRoute);
+
+  const btnManual = document.getElementById('btn-manual-draw');
+  if (btnManual) {
+    btnManual.addEventListener('click', toggleManualDraw);
+  }
+
+  const mapEl = document.getElementById('game-map');
+  if (mapEl) {
+    mapEl.addEventListener('click', function (e) {
+      if (!manualDrawMode) return;
+      const pt = _svgPtFromEvent(e);
+      _routeDrawPoints.push(pt);
+      _redrawRouteSvg();
+      _saveDrawnRoute();
+    });
+  }
+}
+
+
+function toggleManualDraw() {
+  manualDrawMode = !manualDrawMode;
+  const btn = document.getElementById('btn-manual-draw');
+  if (manualDrawMode) {
+    btn.textContent = "CONCLUIR E SALVAR ROTA";
+    btn.style.background = "#facc15";
+    btn.style.color = "#000";
+    setGameFeedback("MODO DESENHO: Clique no mapa para criar seu caminho verde. Ao terminar, clique em CONCLUIR.", "good");
+    _routeDrawPoints = [];
+    _redrawRouteSvg();
+  } else {
+    btn.style.display = "none";
+    setGameFeedback("Rota manual salva com sucesso! O botao sumiu para sua apresentacao ficar limpa.", "good");
+    applyManualRoute();
+  }
 }
 
 // --- Inicializacao ---
