@@ -697,6 +697,7 @@ function applyOptimalRoute() {
   const best = bestOrderForSelection(ALL_STOPS.slice());
   selectedRoute = best.order.slice();
   routeToolEnabled = true;
+  drawRouteManually(expandRouteNodes(selectedRoute));
 
   document.querySelectorAll('.map-point').forEach(function (btn) {
     btn.classList.remove('selected', 'collected', 'ordered');
