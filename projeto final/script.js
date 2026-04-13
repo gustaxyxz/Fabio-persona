@@ -771,6 +771,9 @@ var _routeDrawPoints = [];    // [{x,y}] em pixels relativos ao mapa
 var _routeDrawBound = false;
 var ROUTE_DRAW_KEY = 'rota-drawn-route-v1';
 
+// Rota manual desenhada pelo usuario e fixada para persistencia universal
+const HARDCODED_ROUTE = [{ "xPct": 43.755958055290755, "yPct": 40.062023483159884 }, { "xPct": 48.80838894184938, "yPct": 43.87881737628966 }, { "xPct": 59.58055290753098, "yPct": 35.736323737612814 }, { "xPct": 48.90371782650143, "yPct": 43.75159091318533 }, { "xPct": 35.08102955195424, "yPct": 55.32919905567897 }, { "xPct": 51.19161105815062, "yPct": 67.54293951369425 }, { "xPct": 47.283126787416585, "yPct": 64.61673086229474 }, { "xPct": 68.63679694947568, "yPct": 47.95006419562809 }];
+
 function _saveDrawnRoute() {
   var map = document.getElementById('game-map');
   if (!map || !_routeDrawPoints.length) return;
@@ -784,14 +787,23 @@ function _saveDrawnRoute() {
 
 function _loadDrawnRoute() {
   try {
-    var raw = localStorage.getItem(ROUTE_DRAW_KEY);
-    if (!raw) return false;
-    var pcts = JSON.parse(raw);
-    if (!Array.isArray(pcts) || pcts.length < 2) return false;
     var map = document.getElementById('game-map');
     if (!map) return false;
     var w = map.offsetWidth;
     var h = map.offsetHeight;
+
+    var raw = localStorage.getItem(ROUTE_DRAW_KEY);
+    var pcts = null;
+
+    if (raw) {
+      try { pcts = JSON.parse(raw); } catch (e) { }
+    }
+
+    // Se nao houver no localStorage, usa a rota fixa "chumbada"
+    if (!Array.isArray(pcts) || pcts.length < 2) {
+      pcts = HARDCODED_ROUTE;
+    }
+
     _routeDrawPoints = pcts.map(function (p) {
       return { x: p.xPct * w / 100, y: p.yPct * h / 100 };
     });
@@ -1380,41 +1392,10 @@ function initDomGame() {
   document.getElementById('btn-partir').addEventListener('click', startRoute);
   document.getElementById('btn-reset-route').addEventListener('click', resetGame);
   document.getElementById('btn-rota-otima').addEventListener('click', applyOptimalRoute);
-
-  const btnManual = document.getElementById('btn-manual-draw');
-  if (btnManual) {
-    btnManual.addEventListener('click', toggleManualDraw);
-  }
-
-  const mapEl = document.getElementById('game-map');
-  if (mapEl) {
-    mapEl.addEventListener('click', function (e) {
-      if (!manualDrawMode) return;
-      const pt = _svgPtFromEvent(e);
-      _routeDrawPoints.push(pt);
-      _redrawRouteSvg();
-      _saveDrawnRoute();
-    });
-  }
 }
 
-
-function toggleManualDraw() {
-  manualDrawMode = !manualDrawMode;
-  const btn = document.getElementById('btn-manual-draw');
-  if (manualDrawMode) {
-    btn.textContent = "CONCLUIR E SALVAR ROTA";
-    btn.style.background = "#facc15";
-    btn.style.color = "#000";
-    setGameFeedback("MODO DESENHO: Clique no mapa para criar seu caminho verde. Ao terminar, clique em CONCLUIR.", "good");
-    _routeDrawPoints = [];
-    _redrawRouteSvg();
-  } else {
-    btn.style.display = "none";
-    setGameFeedback("Rota manual salva com sucesso! O botao sumiu para sua apresentacao ficar limpa.", "good");
-    applyManualRoute();
-  }
-}
+// --- Removidas ferramentas temporarias de desenho --- 
+function toggleManualDraw() { }
 
 // --- Inicializacao ---
 
