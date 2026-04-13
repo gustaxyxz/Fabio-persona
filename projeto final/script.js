@@ -755,6 +755,9 @@ function drawRouteManually(nodes) {
     seg.classList.remove('manual-route');
   });
 
+  // Esconde linha SVG se estiver operando em modo automatico
+  if (_routeDrawSvg) _routeDrawSvg.style.display = 'none';
+
   if (!nodes || !nodes.length) return;
   for (let i = 1; i < nodes.length; i++) {
     setStreetState('manual-route', nodes[i - 1], nodes[i]);
@@ -855,6 +858,11 @@ function _svgDot(svg, p, isFirst) {
 function applyManualRoute() {
   if (_routeDrawPoints.length < 2) _loadDrawnRoute();
   if (_routeDrawPoints.length >= 2) {
+    // Limpa qualquer rota de asfalto (automatica) para nao confundir
+    document.querySelectorAll('.street-seg').forEach(function (seg) {
+      seg.classList.remove('manual-route');
+    });
+
     var svg = _getOrCreateRouteSvg();
     svg.style.display = 'block';
     _redrawRouteSvg(null);
