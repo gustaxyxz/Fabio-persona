@@ -69,7 +69,7 @@ p {
 .topbar,
 .page,
 .footer {
-  width: min(1100px, calc(100% - 2rem));
+  width: min(1100px, calc(100% - 1.5rem));
   margin: 0 auto;
 }
 
@@ -167,7 +167,7 @@ p {
 /* ─── Secoes ──────────────────────────────────────────────── */
 
 .section {
-  margin-top: 3rem;
+  margin-top: 2.2rem;
 }
 
 /* Secoes com caixa (hero, persona, mini-game) */
@@ -204,7 +204,7 @@ p {
 }
 
 /* Eyebrow da secao persona tem cor diferente */
-.persona-section > .persona-layout .eyebrow {
+.persona-section>.persona-layout .eyebrow {
   color: var(--accent);
 }
 
@@ -375,9 +375,17 @@ label {
 }
 
 /* Cards coloridos por tipo */
-.card-rotina { border-left: 3px solid var(--accent); }
-.card-dores  { border-left: 3px solid #f87171; }
-.card-objetivo { border-left: 3px solid var(--accent-2); }
+.card-rotina {
+  border-left: 3px solid var(--accent);
+}
+
+.card-dores {
+  border-left: 3px solid #f87171;
+}
+
+.card-objetivo {
+  border-left: 3px solid var(--accent-2);
+}
 
 /* ─── Cards de passo (secao solucao) ──────────────────────── */
 
@@ -838,14 +846,45 @@ body[data-theme="dark"] .game-map::after {
   cursor: default;
 }
 
-#pt-centro      { top: 33.4%; left: 37.8%; transform: translate(calc(-50% - 1.2rem), -100%); }
-#pt-centro:hover:not(:disabled) { transform: translate(calc(-50% - 1.2rem), -100%) scale(1.07); }
-#pt-paulo       { top: 86.0%; left: 61.8%; transform: translate(calc(-50% + 1.2rem), -100%); }
-#pt-paulo:hover:not(:disabled)  { transform: translate(calc(-50% + 1.2rem), -100%) scale(1.07); }
-#pt-vila        { top: 26.8%; left: 64.6%; transform: translate(calc(-50% + 1.8rem), -100%); }
-#pt-vila:hover:not(:disabled) { transform: translate(calc(-50% + 1.8rem), -100%) scale(1.07); }
-#pt-jardim      { top: 45.2%; left: 80.2%; transform: translate(calc(-50% - 1.2rem), -100%); }
-#pt-jardim:hover:not(:disabled) { transform: translate(calc(-50% - 1.2rem), -100%) scale(1.07); }
+#pt-centro {
+  top: 33.4%;
+  left: 37.8%;
+  transform: translate(calc(-50% - 1.2rem), -100%);
+}
+
+#pt-centro:hover:not(:disabled) {
+  transform: translate(calc(-50% - 1.2rem), -100%) scale(1.07);
+}
+
+#pt-paulo {
+  top: 86.0%;
+  left: 61.8%;
+  transform: translate(calc(-50% + 1.2rem), -100%);
+}
+
+#pt-paulo:hover:not(:disabled) {
+  transform: translate(calc(-50% + 1.2rem), -100%) scale(1.07);
+}
+
+#pt-vila {
+  top: 26.8%;
+  left: 64.6%;
+  transform: translate(calc(-50% + 1.8rem), -100%);
+}
+
+#pt-vila:hover:not(:disabled) {
+  transform: translate(calc(-50% + 1.8rem), -100%) scale(1.07);
+}
+
+#pt-jardim {
+  top: 45.2%;
+  left: 80.2%;
+  transform: translate(calc(-50% - 1.2rem), -100%);
+}
+
+#pt-jardim:hover:not(:disabled) {
+  transform: translate(calc(-50% - 1.2rem), -100%) scale(1.07);
+}
 
 .stop-badge {
   position: absolute;
@@ -866,7 +905,10 @@ body[data-theme="dark"] .game-map::after {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
-#pt-faculdade   { top: 58.0%; left: 64.2%; }
+#pt-faculdade {
+  top: 58.0%;
+  left: 64.2%;
+}
 
 #pt-faculdade.arrived {
   background: linear-gradient(135deg, rgba(74, 222, 128, 0.96), rgba(187, 247, 208, 0.96));
@@ -1100,7 +1142,7 @@ body[data-theme="dark"] .game-map::after {
   flex-direction: column;
   gap: 0.25rem;
   background: rgba(8, 14, 26, 0.72);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
   padding: 0.4rem 0.6rem;
   backdrop-filter: blur(6px);
@@ -1126,7 +1168,7 @@ body[data-theme="dark"] .game-map::after {
 .hud-track {
   flex: 1;
   height: 0.45rem;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 1rem;
   overflow: hidden;
 }
@@ -1137,14 +1179,26 @@ body[data-theme="dark"] .game-map::after {
   transition: width 0.3s ease, background-color 0.4s ease;
 }
 
-.hud-fuel { background: #4cde80; width: 100%; }
-.hud-fuel.hud-fuel-low { background: #ff5252; }
+.hud-fuel {
+  background: #4cde80;
+  width: 100%;
+}
 
-.hud-sleep { background: #4fc3f7; width: 0%; }
-.hud-sleep.hud-sleep-high { background: #fa8231; }
+.hud-fuel.hud-fuel-low {
+  background: #ff5252;
+}
+
+.hud-sleep {
+  background: #4fc3f7;
+  width: 0%;
+}
+
+.hud-sleep.hud-sleep-high {
+  background: #fa8231;
+}
 
 .hud-value {
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 0.68rem;
   min-width: 2.5rem;
   text-align: right;
@@ -1153,8 +1207,13 @@ body[data-theme="dark"] .game-map::after {
 
 
 @keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .overlay-card {
@@ -1183,8 +1242,13 @@ body[data-theme="dark"] .game-map::after {
   margin: 0;
 }
 
-.overlay-win  .overlay-title { color: #4ade80; }
-.overlay-loss .overlay-title { color: #f87171; }
+.overlay-win .overlay-title {
+  color: #4ade80;
+}
+
+.overlay-loss .overlay-title {
+  color: #f87171;
+}
 
 .overlay-subtitle {
   font-size: 0.95rem;
@@ -1226,8 +1290,8 @@ body[data-theme="dark"] .game-map::after {
 .overlay-pitch {
   margin: 0.5rem 0 0.3rem;
   padding: 1rem 1.2rem;
-  background: linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(6,78,59,0.18) 100%);
-  border: 1px solid rgba(52,211,153,0.35);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 78, 59, 0.18) 100%);
+  border: 1px solid rgba(52, 211, 153, 0.35);
   border-radius: 12px;
   max-width: 400px;
   text-align: left;
@@ -1265,8 +1329,13 @@ body[data-theme="dark"] .game-map::after {
 }
 
 @keyframes facultyArrivalPulse {
-  from { transform: translate(-50%, -115%) scale(1); }
-  to { transform: translate(-50%, -115%) scale(1.06); }
+  from {
+    transform: translate(-50%, -115%) scale(1);
+  }
+
+  to {
+    transform: translate(-50%, -115%) scale(1.06);
+  }
 }
 
 @media (max-width: 680px) {
@@ -1299,14 +1368,20 @@ body[data-theme="dark"] .game-map::after {
   .persona-layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    text-align: center;
   }
 
   .persona-photo {
-    width: 560px;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    margin: 0 auto;
   }
 
   .persona-photo-side {
     order: -1;
+    display: flex;
+    justify-content: center;
   }
 }
 
@@ -1317,15 +1392,34 @@ body[data-theme="dark"] .game-map::after {
 }
 
 @media (max-width: 680px) {
+  :root {
+    font-size: 15px;
+    /* Redução global da escala base no mobile */
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
   .topbar,
   .page,
   .footer {
-    width: min(100% - 1rem, 1100px);
+    width: calc(100% - 1rem);
   }
 
   .topbar {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .menu {
+    display: none;
+    /* Esconde menu no mobile para simplificar */
   }
 
   .hero,
@@ -1334,7 +1428,7 @@ body[data-theme="dark"] .game-map::after {
   .form,
   .message,
   .footer {
-    padding: 1rem;
+    padding: 1.2rem;
   }
 
   .hero-grid,
@@ -1359,10 +1453,51 @@ body[data-theme="dark"] .game-map::after {
 
   .persona-stats {
     grid-template-columns: 1fr;
+    gap: 0.8rem;
   }
 
   .persona-photo {
-    width: 400px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .game-container {
+    padding: 0.5rem;
+  }
+
+  .game-map {
+    border-radius: 8px;
+    min-height: 250px;
+  }
+
+  #game-hud {
+    top: 0.5rem;
+    right: 0.5rem;
+    min-width: 7.5rem;
+    padding: 0.3rem 0.5rem;
+    gap: 0.15rem;
+  }
+
+  .hud-label {
+    font-size: 0.75rem;
+  }
+
+  #game-btn-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  #game-btn-row .button {
+    margin: 0;
+    width: 100%;
+  }
+
+  .overlay-card {
+    padding: 1.2rem;
+  }
+
+  .overlay-icon {
+    font-size: 2rem;
   }
 }
-
