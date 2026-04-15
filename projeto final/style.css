@@ -1,3 +1,7 @@
+/* Garante que o nome do aluno fique acima do ponto */
+.map-point {
+  position: relative;
+}
 :root {
   color-scheme: light;
   --bg: #f3f5f9;
@@ -69,7 +73,7 @@ p {
 .topbar,
 .page,
 .footer {
-  width: min(1100px, calc(100% - 1.5rem));
+  width: min(1100px, calc(100% - 2rem));
   margin: 0 auto;
 }
 
@@ -167,7 +171,7 @@ p {
 /* ─── Secoes ──────────────────────────────────────────────── */
 
 .section {
-  margin-top: 2.2rem;
+  margin-top: 3rem;
 }
 
 /* Secoes com caixa (hero, persona, mini-game) */
@@ -295,9 +299,11 @@ label {
 
 .persona-photo {
   width: 100%;
-  max-width: 450px;
+  max-width: 700px;
   height: auto;
   object-fit: contain;
+  transform: scale(1.25);
+  transform-origin: center center;
   filter: drop-shadow(0 12px 28px rgba(105, 164, 255, 0.3));
 }
 
@@ -406,24 +412,12 @@ label {
   margin-bottom: 1.2rem;
 }
 
-.cards.three,
-.cards.four,
-.preview-grid {
-  grid-template-columns: 1fr;
+.cards.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-@media (min-width: 768px) {
-  .cards.three {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .cards.four {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .preview-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.cards.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .card {
@@ -442,6 +436,10 @@ label {
 
 .status {
   margin: 0.15rem 0 0.9rem;
+}
+
+.preview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .preview-card {
@@ -593,21 +591,14 @@ input::placeholder {
 .game-map {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  min-height: 240px;
+  aspect-ratio: 867 / 650;
+  min-height: 420px;
   background: url('mapa.png') center / contain no-repeat, #000;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--line);
   transition: transform 0.65s cubic-bezier(0.34, 1.3, 0.64, 1);
   transform-origin: top center;
-}
-
-@media (min-width: 768px) {
-  .game-map {
-    aspect-ratio: 867 / 650;
-    min-height: 480px;
-  }
 }
 
 .game-map::before,
@@ -646,20 +637,35 @@ body[data-theme="dark"] .game-map::after {
   pointer-events: auto;
 }
 
-.street-seg {
-  position: absolute;
-  height: 0.75rem;
-  border-radius: 999px;
-  background: transparent;
-  box-shadow: none;
-  transform-origin: left center;
-  transition: background 0.25s, box-shadow 0.25s, opacity 0.25s;
-  opacity: 0;
+/* Nome do aluno acima da cabeça */
+.student-tag {
+  display: inline-block;
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: "League Spartan", sans-serif;
+  font-weight: 700;
+  padding: 0.1em 0.7em;
+  margin: 0.2em 0 0 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   pointer-events: none;
+  position: relative;
+  z-index: 2;
 }
-
-.game-map.is-editing-lines .street-seg {
-  cursor: default;
+.student-tag-top {
+  position: absolute;
+  left: 50%;
+  top: -2.7em;
+  transform: translateX(-50%);
+  margin: 0;
+  white-space: nowrap;
+  pointer-events: auto;
+  z-index: 10;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 0.1em 0.7em;
+  cursor: grab;
 }
 
 .game-map.is-editing-lines .street-seg:active {
@@ -694,9 +700,11 @@ body[data-theme="dark"] .game-map::after {
 }
 
 .street-seg.manual-route {
-  background: rgba(34, 197, 94, 0.92);
-  box-shadow: 0 0 0 0.24rem rgba(34, 197, 94, 0.3), 0 0 0.6rem rgba(34, 197, 94, 0.45);
-  opacity: 1;
+  background: transparent;
+  box-shadow: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 #st-g-centro {
@@ -860,43 +868,43 @@ body[data-theme="dark"] .game-map::after {
 }
 
 #pt-centro {
-  top: 33.4%;
-  left: 37.8%;
-  transform: translate(calc(-50% - 1.2rem), -100%);
+  top: 49.5%;
+  left: 41.8%;
+  transform: translate(-50%, -100%);
 }
 
 #pt-centro:hover:not(:disabled) {
-  transform: translate(calc(-50% - 1.2rem), -100%) scale(1.07);
+  transform: translate(-50%, -100%) scale(1.07);
 }
 
 #pt-paulo {
-  top: 86.0%;
-  left: 61.8%;
-  transform: translate(calc(-50% + 1.2rem), -100%);
+  top: 36.8%;
+  left: 58.8%;
+  transform: translate(-50%, -100%);
 }
 
 #pt-paulo:hover:not(:disabled) {
-  transform: translate(calc(-50% + 1.2rem), -100%) scale(1.07);
+  transform: translate(-50%, -100%) scale(1.07);
 }
 
 #pt-vila {
-  top: 26.8%;
-  left: 64.6%;
-  transform: translate(calc(-50% + 1.8rem), -100%);
+  top: 68.8%;
+  left: 52.6%;
+  transform: translate(-50%, -100%);
 }
 
 #pt-vila:hover:not(:disabled) {
-  transform: translate(calc(-50% + 1.8rem), -100%) scale(1.07);
+  transform: translate(-50%, -100%) scale(1.07);
 }
 
 #pt-jardim {
-  top: 45.2%;
-  left: 80.2%;
-  transform: translate(calc(-50% - 1.2rem), -100%);
+  top: 52.8%;
+  left: 60.6%;
+  transform: translate(-50%, -100%);
 }
 
 #pt-jardim:hover:not(:disabled) {
-  transform: translate(calc(-50% - 1.2rem), -100%) scale(1.07);
+  transform: translate(-50%, -100%) scale(1.07);
 }
 
 .stop-badge {
@@ -919,8 +927,8 @@ body[data-theme="dark"] .game-map::after {
 }
 
 #pt-faculdade {
-  top: 58.0%;
-  left: 64.2%;
+  top: 48.1%;
+  left: 68.8%;
 }
 
 #pt-faculdade.arrived {
@@ -940,7 +948,7 @@ body[data-theme="dark"] .game-map::after {
   position: absolute;
   width: clamp(22px, 2.6vw, 30px);
   top: 40.1%;
-  left: 44.0%;
+  left: 43.9%;
   z-index: 4;
   transition: none;
   pointer-events: none;
@@ -996,136 +1004,7 @@ body[data-theme="dark"] .game-map::after {
   border-color: rgba(248, 113, 113, 0.35);
 }
 
-.route-editor {
-  margin-top: 0.9rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--surface-soft) 92%, transparent);
-  padding: 0.7rem;
-}
-
-.route-editor-summary {
-  cursor: pointer;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.route-editor-help {
-  margin: 0.6rem 0;
-  font-size: 0.84rem;
-  color: var(--muted);
-}
-
-.route-editor-row {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.5rem;
-}
-
-.route-editor-field {
-  font-size: 0.82rem;
-  color: var(--muted);
-  font-weight: 700;
-}
-
-.route-editor-select {
-  min-height: 2rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  color: var(--text);
-  padding: 0.25rem 0.65rem;
-}
-
-.route-editor-mouse-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin: 0.1rem 0 0.55rem;
-  color: var(--text);
-  font-size: 0.84rem;
-}
-
-.route-editor-mouse-toggle input {
-  width: auto;
-  min-height: 0;
-}
-
-.route-editor-textarea {
-  width: 100%;
-  min-height: 220px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  color: var(--text);
-  font: 500 0.8rem/1.45 "Consolas", "Courier New", monospace;
-  padding: 0.75rem;
-  resize: vertical;
-}
-
-.route-editor-actions {
-  display: flex;
-  gap: 0.55rem;
-  flex-wrap: wrap;
-  margin-top: 0.65rem;
-}
-
-.route-editor-status {
-  margin-top: 0.5rem;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-#waypoint-editor-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  pointer-events: none;
-}
-
-.game-map.is-editing-lines #waypoint-editor-layer {
-  pointer-events: none;
-}
-
-.waypoint-handle {
-  position: absolute;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 999px;
-  border: 1px solid #f0fdf4;
-  background: #16a34a;
-  color: #f0fdf4;
-  font: 700 0.58rem/1 "Source Sans 3", sans-serif;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 0.18rem rgba(22, 163, 74, 0.25);
-  cursor: grab;
-  pointer-events: auto;
-}
-
-.waypoint-handle:active {
-  cursor: grabbing;
-}
-
-.line-endpoint-handle {
-  position: absolute;
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 999px;
-  border: 2px solid #dcfce7;
-  background: #22c55e;
-  color: #052e16;
-  font: 800 0.6rem/1 "Source Sans 3", sans-serif;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 0.22rem rgba(34, 197, 94, 0.25), 0 0 0.8rem rgba(34, 197, 94, 0.45);
-  cursor: grab;
-  pointer-events: auto;
-}
-
-.line-endpoint-handle:active {
-  cursor: grabbing;
-}
+/* Editor tools removed */
 
 /* ── Overlay de vitória/derrota sobre o mapa ─────────────────── */
 .game-overlay {
@@ -1146,20 +1025,23 @@ body[data-theme="dark"] .game-map::after {
 }
 
 /* HUD */
+/* HUD compacta no canto inferior direito */
 #game-hud {
   position: absolute;
-  top: 0.5rem;
+  bottom: 0.5rem;
   right: 0.5rem;
-  z-index: 10;
+  z-index: 40;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  background: rgba(8, 14, 26, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  padding: 0.4rem 0.6rem;
+  gap: 0.35rem;
+  background: rgba(8, 14, 26, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  padding: 0.18rem;
   backdrop-filter: blur(6px);
-  min-width: 9rem;
+  min-width: auto;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 #game-hud[hidden] {
@@ -1170,7 +1052,11 @@ body[data-theme="dark"] .game-map::after {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.72rem;
+  font-size: 0.64rem;
+  padding: 0.08rem 0.32rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .hud-label {
@@ -1179,9 +1065,9 @@ body[data-theme="dark"] .game-map::after {
 }
 
 .hud-track {
-  flex: 1;
-  height: 0.45rem;
-  background: rgba(255, 255, 255, 0.12);
+  width: 3.2rem;
+  height: 0.28rem;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 1rem;
   overflow: hidden;
 }
@@ -1189,12 +1075,11 @@ body[data-theme="dark"] .game-map::after {
 .hud-fill {
   height: 100%;
   border-radius: 1rem;
-  transition: width 0.3s ease, background-color 0.4s ease;
+  transition: width 0.28s ease, background-color 0.32s ease;
 }
 
 .hud-fuel {
   background: #4cde80;
-  width: 100%;
 }
 
 .hud-fuel.hud-fuel-low {
@@ -1203,7 +1088,6 @@ body[data-theme="dark"] .game-map::after {
 
 .hud-sleep {
   background: #4fc3f7;
-  width: 0%;
 }
 
 .hud-sleep.hud-sleep-high {
@@ -1211,10 +1095,11 @@ body[data-theme="dark"] .game-map::after {
 }
 
 .hud-value {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.68rem;
-  min-width: 2.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.62rem;
+  min-width: 2rem;
   text-align: right;
+  margin-left: 0.2rem;
 }
 
 
@@ -1381,20 +1266,14 @@ body[data-theme="dark"] .game-map::after {
   .persona-layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    text-align: center;
   }
 
   .persona-photo {
-    width: 100%;
-    max-width: 420px;
-    height: auto;
-    margin: 0 auto;
+    width: 560px;
   }
 
   .persona-photo-side {
     order: -1;
-    display: flex;
-    justify-content: center;
   }
 }
 
@@ -1405,34 +1284,30 @@ body[data-theme="dark"] .game-map::after {
 }
 
 @media (max-width: 680px) {
-  :root {
-    font-size: 15px;
-    /* Redução global da escala base no mobile */
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  h2 {
-    font-size: 1.4rem;
-  }
-
-  .topbar,
-  .page,
-  .footer {
-    width: calc(100% - 1rem);
-  }
-
   .topbar {
     align-items: center;
-    flex-direction: row;
-    padding: 0.6rem 0.8rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+    width: min(100% - 1.5rem, 1100px);
+    margin: 0 auto;
+    padding: 1rem 0.5rem;
   }
 
   .menu {
-    display: none;
-    /* Esconde menu no mobile para simplificar */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.2rem;
+    width: 100%;
+    margin: 0.2rem 0 0.8rem;
+  }
+
+  .top-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
   }
 
   .hero,
@@ -1441,7 +1316,40 @@ body[data-theme="dark"] .game-map::after {
   .form,
   .message,
   .footer {
-    padding: 1.2rem;
+    padding: 1.25rem 1rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  #game-controls {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  #game-btn-row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .button,
+  .form-row button {
+    width: 100%;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
   }
 
   .hero-grid,
@@ -1449,15 +1357,7 @@ body[data-theme="dark"] .game-map::after {
   .cards.four,
   .preview-grid {
     grid-template-columns: 1fr;
-  }
-
-  .button,
-  .form-row button {
-    width: 100%;
-  }
-
-  .hero-actions {
-    flex-direction: column;
+    gap: 1rem;
   }
 
   .form-row {
@@ -1466,51 +1366,178 @@ body[data-theme="dark"] .game-map::after {
 
   .persona-stats {
     grid-template-columns: 1fr;
-    gap: 0.8rem;
   }
 
   .persona-photo {
     width: 100%;
-    max-width: 320px;
+    max-width: 400px;
   }
 
-  .game-container {
-    padding: 0.5rem;
+  .page,
+  .footer {
+    width: min(100% - 1rem, 1100px);
+    margin-left: auto;
+    margin-right: auto;
   }
+}
 
-  .game-map {
-    border-radius: 8px;
-    min-height: 250px;
-  }
+/* Route Editor */
+#waypoint-editor-layer {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
 
-  #game-hud {
-    top: 0.5rem;
-    right: 0.5rem;
-    min-width: 7.5rem;
-    padding: 0.3rem 0.5rem;
-    gap: 0.15rem;
-  }
+.route-editor {
+  margin-top: 1rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+}
 
-  .hud-label {
-    font-size: 0.75rem;
-  }
+.route-editor-summary {
+  font-weight: 700;
+  cursor: pointer;
+  color: #4ade80;
+  padding: 0.5rem 0;
+}
 
-  #game-btn-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.6rem;
-  }
+.route-editor-help {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.8rem;
+}
 
-  #game-btn-row .button {
-    margin: 0;
-    width: 100%;
-  }
+.route-editor-row {
+  display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem;
+}
 
-  .overlay-card {
-    padding: 1.2rem;
-  }
+.route-editor-field {
+  font-size: 0.85rem; width: 80px; font-weight: 600;
+}
 
-  .overlay-icon {
-    font-size: 2rem;
-  }
+.route-editor-select, .route-editor-textarea {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.4rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.route-editor-textarea {
+  width: 100%;
+  height: 120px;
+  margin: 0.8rem 0;
+  font-family: monospace;
+}
+
+.route-editor-mouse-toggle {
+  display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-top: 0.5rem; color: #facc15;
+}
+
+.route-editor-actions {
+  display: flex; gap: 0.6rem; margin-top: 0.8rem;
+}
+
+.route-editor-status {
+  font-size: 0.75rem; color: #4ade80; margin-top: 0.5rem;
+}
+
+.waypoint-handle, .line-endpoint-handle {
+  position: absolute;
+  width: 20px; height: 20px;
+  background: #22c55e;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  pointer-events: auto;
+  z-index: 101;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.line-endpoint-handle {
+  background: #facc15;
+  color: #000;
+}
+
+.waypoint-handle:active, .line-endpoint-handle:active {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(1.4);
+}
+
+/* Identity Gate & Age Overlay Refinement */
+.identity-card {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  animation: slideDown 0.45s ease-out;
+}
+
+.identity-card .message {
+  margin-top: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.age-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: white;
+  border-radius: 16px;
+  z-index: 9999;
+  cursor: pointer;
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+  pointer-events: auto;
+}
+
+.age-overlay:hover {
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(10px);
+}
+
+.age-overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+  padding: 2rem;
+  user-select: none;
+}
+
+.age-icon {
+  font-size: 3.2rem;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+  margin-bottom: 0.5rem;
+}
+
+.age-text {
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rota ajuda na organização de alunos e revisão de endereços.">
+  <title>Rota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2026041103">
+  <script src="script.js" defer></script>
+</head>
+<body data-theme="dark">
+  <header class="topbar">
+    <a class="brand" href="#inicio">Rota</a>
+    <nav class="menu" aria-label="Navegação principal">
+      <a href="index.html">Início</a>
+      <a href="sobre.html" aria-current="page">Sobre</a>
+      <a href="jogo.html">Mini game</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="top-actions">
+      <button id="themeToggle" class="button button-ghost" type="button">Tema claro</button>
+      <button id="ageGateButton" class="button button-main" type="button">Validar idade</button>
+    </div>
+  </header>
+
+    <section id="solucao" class="section section-alt">
+      <div class="section-title">
+        <p class="eyebrow">Como o site atende a persona</p>
+        <h2>Fluxo simples para escolher o menor caminho</h2>
+      </div>
+      <div class="cards three">
+        <article class="card card-step"><span class="step-num">01</span><h3>Mapa Interativo</h3><p>Exibe os endereços visualmente com as ruas mapeadas, resolvendo a dor de esquecer o trajeto dos alunos.</p></article>
+        <article class="card card-step"><span class="step-num">02</span><h3>Cálculo Avançado (Dijkstra)</h3><p>A ferramenta utiliza o poderoso <strong>Algoritmo de Dijkstra</strong> para calcular matematicamente o menor caminho em um grafo de ruas, zerando o desperdício.</p></article>
+        <article class="card card-step"><span class="step-num">03</span><h3>Mini game Tático</h3><p>Simula o desgaste e o sono na viagem para forçar a tomada de decisão rápida e inteligente antes de partir.</p></article>
+      </div>
+    </section>
+    <section id="historia" class="section section-alt">
+      <div class="section-title">
+        <p class="eyebrow">História do jogo</p>
+        <h2>Uma madrugada decisiva na rota do Fábio</h2>
+      </div>
+      <div class="cards three">
+        <article class="card"><h3>Enredo</h3><p>Fábio Alves precisa sair da garagem, buscar os alunos confirmados e chegar à faculdade antes do horário da aula, economizando combustível no trajeto.</p></article>
+        <article class="card"><h3>Conflito</h3><p>Além de escolher a melhor sequência de embarque, Fábio luta contra o cansaço e a narcolepsia, o que pode atrasar a viagem se o jogador não escolher a melhor rota.</p></article>
+        <article class="card"><h3>Objetivo do projeto</h3><p>Transformar um problema real de transporte universitário em um mini game que apresenta uma solução real, com lógica, cenário, personagens, animação e tomada de decisão.</p></article>
+      </div>
+    </section>
+
+
+    <section id="wireframe" class="section section-alt">
+      <div class="section-title">
+        <p class="eyebrow">Rabisco das telas</p>
+        <h2>Wireframe simples para apresentação</h2>
+        <p>Este rabisco resume as duas telas principais do projeto e deixa claro o fluxo de navegação para a avaliação.</p>
+      </div>
+      <div class="cards two wireframe-grid">
+        <article class="card">
+          <h3>Página do Jogo (Mini Game)</h3>
+          <img src="print-jogo.png" alt="Print do mapa interativo" style="width: 100%; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 1rem;">
+          <p>O print acima substitui o rabisco em caixas para comprovar visualmente o conceito final da interface do jogo, barras de status e mapa isométrico.</p>
+        </article>
+
+        <article class="card">
+          <h3>Página de contato</h3>
+          <div class="wireframe-box">
+            <div class="wireframe-row">
+              <span class="wireframe-pill"></span>
+            </div>
+            <div class="wireframe-main wireframe-main-short"></div>
+            <div class="wireframe-form-line"></div>
+            <div class="wireframe-form-line"></div>
+            <div class="wireframe-footer"></div>
+          </div>
+          <p>Entrega um canal simples para feedback, melhorias e retorno do usuário sobre o sistema.</p>
+        </article>
+      </div>
+    </section>
+    <section id="estrutura" class="section">
+      <div class="section-title">
+        <p class="eyebrow">Estrutura do sistema</p>
+        <h2>Páginas internas do site</h2>
+      </div>
+      <div class="cards">
+        <article class="card"><h3>index.html</h3><p>Página inicial (Landing Page) com Persona e introdução.</p></article>
+        <article class="card"><h3>sobre.html</h3><p>Apresentação da solução, dores, wireframes e estrutura.</p></article>
+        <article class="card"><h3>jogo.html</h3><p>Sessão interativa com o Mini Game (Tech Forge).</p></article>
+        <article class="card"><h3>contato.html</h3><p>Canal simples para feedback e melhorias.</p></article>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <p><strong id="siteNameFooter">Rota</strong> - organização de embarques e revisão de endereços para trajetos noturnos.</p>
+  </footer>
+</body>
+</html>

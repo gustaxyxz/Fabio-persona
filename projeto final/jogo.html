@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rota ajuda na organização de alunos e revisão de endereços.">
+  <title>Rota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2026041103">
+  <script src="script.js" defer></script>
+</head>
+<body data-theme="dark">
+  <header class="topbar">
+    <a class="brand" href="#inicio">Rota</a>
+    <nav class="menu" aria-label="Navegação principal">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="jogo.html" aria-current="page">Mini game</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="top-actions">
+      <button id="themeToggle" class="button button-ghost" type="button">Tema escuro</button>
+      <button id="ageGateButton" class="button button-main" type="button">Validar idade</button>
+    </div>
+  </header>
+  <main class="page" id="inicio">
+    <section id="mini-game" class="section section-card" style="margin-top:2rem;">
+      <div class="section-title">
+        <p class="eyebrow">Mini game</p>
+        <h2>Rota Certa</h2>
+        <p>Escolha a ordem dos pontos de coleta e guie a van do Fábio pelo menor caminho até a faculdade.</p>
+      </div>
+      <p id="ageGateStatus" class="status">Preveja a rota antes de começar.</p>
+      <div id="previewGrid" class="preview-grid" data-sensitive="true"></div>
+
+      <!-- Fase 1: Identificação (Nome) -->
+      <div id="game-identity-gate" class="identity-card">
+        <div class="section-title">
+          <p class="eyebrow">Primeiro nível</p>
+          <h3>Quem está jogando?</h3>
+        </div>
+        <form id="welcomeForm" class="form">
+          <label for="visitorName">Para começar, qual é o seu nome?</label>
+          <div class="form-row">
+            <input id="visitorName" type="text" maxlength="40" placeholder="Ex: Gustavo" required>
+            <button class="button button-main" type="submit">Confirmar nome</button>
+          </div>
+        </form>
+        <div id="game-identity-gate-next" style="display: none; margin-top: 1.5rem; text-align: center;">
+          <p id="welcome-intro-text" style="font-weight: 700; color: var(--accent); margin-bottom: 1rem;"></p>
+          <button id="cardAgeGateButton" class="button button-main" type="button">Validar minha idade agora</button>
+        </div>
+      </div>
+      
+      <!-- Removido overlay fixo, texto será movido para o overlay de idade -->
+        <div id="game-container" aria-live="polite" style="position:relative;">
+          <div id="game-ui">
+            <p class="game-instruction">Selecione os alunos que vao embarcar e defina a ordem da busca clicando nos nomes. A van segue pelas ruas do mapa e depois vai para a Faculdade.</p>
+            <div id="map-area" style="position:relative;">
+              <div id="map-blur-target">
+                <div id="game-map" class="game-map">
+                  <div id="street-layer" aria-hidden="true"></div>
+                  <button class="stop-btn map-point" id="pt-centro" data-stop="Centro" data-student="André" type="button" title="André - Centro">
+                    <span class="student-tag student-tag-top"><span class="stop-label">André</span></span>
+                  </button>
+                  <button class="stop-btn map-point" id="pt-paulo" data-stop="Paulo Grande" data-student="Bruno" type="button" title="Bruno - Paulo Grande">
+                    <span class="student-tag student-tag-top"><span class="stop-label">Bruno</span></span>
+                  </button>
+                  <button class="stop-btn map-point" id="pt-vila" data-stop="Vila Nova" data-student="Carlos" type="button" title="Carlos - Vila Nova">
+                    <span class="student-tag student-tag-top"><span class="stop-label">Carlos</span></span>
+                  </button>
+                  <button class="stop-btn map-point" id="pt-jardim" data-stop="Jardim America" data-student="Diego" type="button" title="Diego - Jardim America">
+                    <span class="student-tag student-tag-top"><span class="stop-label">Diego</span></span>
+                  </button>
+                  <div class="stop-badge" id="pt-faculdade"><span class="stop-pin"></span><span class="stop-label">Faculdade</span></div>
+                  <img src="van.png" id="van-icon" alt="Van do Fábio">
+                  <div id="game-overlay" hidden></div>
+                </div>
+                <div id="game-hud">
+                  <div class="hud-item">
+                    <span class="hud-label" aria-hidden="true">⛽</span>
+                    <div class="hud-track" role="progressbar" aria-label="Combustível">
+                      <div class="hud-fill hud-fuel" id="hud-fuel-bar" style="width:100%"></div>
+                    </div>
+                    <span class="hud-value" id="hud-fuel-val">100%</span>
+                  </div>
+                  <div class="hud-item">
+                    <span class="hud-label" aria-hidden="true">😴</span>
+                    <div class="hud-track" role="progressbar" aria-label="Sono">
+                      <div class="hud-fill hud-sleep" id="hud-sleep-bar" style="width:0%"></div>
+                    </div>
+                    <span class="hud-value" id="hud-sleep-val">0%</span>
+                  </div>
+                </div>
+              </div>
+              <!-- overlay fica fora do elemento que recebe o blur (por cima) -->
+              <div id="age-gate-overlay" class="age-overlay" title="Clique para validar sua idade">
+                <div class="age-overlay-content">
+                  <span id="idade-overlay-texto" style="font-weight:900;font-size:clamp(1.5em,4vw,2.7em);line-height:1.13;text-align:center;color:rgba(255,255,255,0.96);text-shadow:0 2px 16px #000,0 0 2px #000;letter-spacing:0.01em;display:inline-block;max-width:90vw;word-break:break-word;">Valide sua idade para jogar</span>
+                </div>
+              </div>
+            </div>
+            </div>
+            <div id="game-controls">
+              <span id="route-display">Selecione a ordem dos alunos e inicie a rota</span>
+              <div id="game-btn-row">
+                <button class="button button-app"   id="btn-rota-otima"    type="button" title="Usar a ferramenta Rota para mostrar o melhor caminho">Usar Ferramenta Rota</button>
+                <button class="button button-ghost" id="btn-reset-route"   type="button">Limpar rota</button>
+                <button class="button button-main"  id="btn-partir"        type="button" disabled>Partir</button>
+              </div>
+            </div>
+            <p id="game-feedback" class="game-feedback">Planeje a rota clicando nos alunos do mapa. As ruas escolhidas ficam marcadas em verde.</p>
+          </div>
+          <!-- Overlay de idade removido daqui, agora está dentro do mapa -->
+      </div>
+
+    </div>
+    </section>
+
+  </main>
+  <footer class="footer">
+    <p><strong id="siteNameFooter">Rota</strong> - organização de embarques e revisão de endereços para trajetos noturnos.</p>
+  </footer>
+</body>
+</html>
