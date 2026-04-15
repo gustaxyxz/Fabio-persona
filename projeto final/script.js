@@ -1,69 +1,9 @@
-// (Listeners and visibility initialization centralized in initializePage)
-// Permite arrastar o nome dos alunos manualmente no mapa
-function enableStudentTagDrag() {
-  // Carrega posições salvas
-  let tagPositions = {};
-  try {
-    tagPositions = JSON.parse(localStorage.getItem('rota-student-tag-positions') || '{}');
-  } catch { }
 
-  document.querySelectorAll('.student-tag-top').forEach(function (tag) {
-    tag.style.cursor = 'grab';
-    const btn = tag.closest('.map-point');
-    if (!btn) return;
-    const stop = btn.dataset.stop;
-    // Aplica posição salva se existir
-    if (tagPositions[stop]) {
-      tag.style.left = tagPositions[stop].left;
-      tag.style.top = tagPositions[stop].top;
-    } else {
-      tag.style.left = '';
-      tag.style.top = '';
-    }
-    tag.onmousedown = function (e) {
-      if (e.button !== 0) return;
-      e.stopPropagation();
-      e.preventDefault();
-      let dragging = true;
-      let startLeft = parseInt(tag.style.left || 0);
-      let startTop = parseInt(tag.style.top || 0);
-      let startPageX = e.pageX;
-      let startPageY = e.pageY;
-      function moveAt(pageX, pageY) {
-        if (!dragging) return;
-        let relX = startLeft + (pageX - startPageX);
-        let relY = startTop + (pageY - startPageY);
-        tag.style.left = relX + 'px';
-        tag.style.top = relY + 'px';
-      }
-      function onMouseMove(ev) {
-        moveAt(ev.pageX, ev.pageY);
-      }
-      function onMouseUp() {
-        dragging = false;
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-        tag.onmouseup = null;
-        tag.style.cursor = 'grab';
-        // Salva posição ao soltar
-        tagPositions[stop] = {
-          left: tag.style.left,
-          top: tag.style.top
-        };
-        localStorage.setItem('rota-student-tag-positions', JSON.stringify(tagPositions));
-      }
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-      tag.onmouseup = onMouseUp;
-    };
-    tag.ondragstart = function () { return false; };
-  });
-}
 
 // enableStudentTagDrag() será chamado em initializePage
 const SITE_NAME = "Rota";
 const PERSONA_NAME = "Fabio Alves";
-const GAME_NAME = "Rota";
+const GAME_NAME = "Rota Certa";
 const GAME_RELEASE_YEAR = 2026;
 const GAME_FOCUS = "encontrar a menor rota para levar ou buscar alunos dos seus enderecos ate a faculdade";
 const PREVIEW_LEVEL = "conceitual";
@@ -164,7 +104,7 @@ function updatePreviewVisibility() {
   // Map blur target: apenas o mapa é borrado — baseia-se somente na validação da idade
   const mapBlurTarget = document.getElementById('map-blur-target');
   if (mapBlurTarget) {
-    mapBlurTarget.style.filter = hasAgeGate ? "" : "blur(8px)";
+    mapBlurTarget.style.filter = hasAgeGate ? "" : "blur(100px)";
     mapBlurTarget.style.userSelect = hasAgeGate ? "" : "none";
     mapBlurTarget.style.pointerEvents = hasAgeGate ? "" : "none";
   }
