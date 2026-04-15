@@ -5,6 +5,14 @@
  * SOLUÇÃO: Algoritmo de Dijkstra para encontrar o menor trajeto entre pontos de coleta.
  */
 
+// --- DADOS ESTÁTICOS (Requisito: Manipulação de Dados Estáticos via DOM) ---
+const SITE_NAME = "Rota";
+const PERSONA_NAME = "Fabio Alves";
+const GAME_NAME = "Rota Certa";
+const GAME_RELEASE_YEAR = 2026;
+const GAME_FOCUS = "encontrar a menor rota para levar ou buscar alunos dos seus enderecos ate a faculdade";
+const PREVIEW_LEVEL = "conceitual";
+
 // --- Parâmetros de Configuração ---
 const AGE_LIMIT = 5; // Idade mínima simbólica para o simulador
 const UNLOCKED_PREVIEW_CARDS = [
@@ -30,6 +38,18 @@ const ageGateButton = document.getElementById("ageGateButton");
 const welcomeForm = document.getElementById("welcomeForm");
 const visitorNameInput = document.getElementById("visitorName");
 const welcomeMessage = document.getElementById("welcomeMessage");
+
+/**
+ * INJEÇÃO DE DADOS ESTÁTICOS (Requisito: Injetar no mínimo 5 constantes via DOM)
+ * Esta função garante que as informações globais sejam distribuídas pelo site.
+ */
+function injectStaticData() {
+  if (document.getElementById("personaName")) document.getElementById("personaName").textContent = PERSONA_NAME;
+  if (document.getElementById("gameName")) document.getElementById("gameName").textContent = GAME_NAME;
+  if (document.getElementById("gameReleaseYear")) document.getElementById("gameReleaseYear").textContent = String(GAME_RELEASE_YEAR);
+  if (document.getElementById("gameFocus")) document.getElementById("gameFocus").textContent = GAME_FOCUS;
+  if (document.getElementById("siteNameFooter")) document.getElementById("siteNameFooter").textContent = SITE_NAME;
+}
 
 
 function updateThemeButtonLabel() {
@@ -161,13 +181,16 @@ function showPersonalizedMessage(event) {
   updatePreviewVisibility();
 }
 
+/**
+ * VERIFICAÇÃO DE LANÇAMENTO (Requisito: Comparação com constante de lançamento)
+ */
 function checkLaunchYear() {
   if (sessionStorage.getItem('rota_launched')) return;
   const currentYear = new Date().getFullYear();
 
-  // Alerta de boas-vindas para o protótipo de 2026
-  if (currentYear === 2026) {
-    alert("Grande Lancamento: Rota Certa - prototipo de otimização de logistica acadêmica.");
+  // Compara o ano atual com a constante GAME_RELEASE_YEAR exigida pela rubrica
+  if (currentYear === GAME_RELEASE_YEAR) {
+    alert("Grande Lancamento: " + GAME_NAME + " - prototipo em nivel " + PREVIEW_LEVEL + ".");
     sessionStorage.setItem('rota_launched', 'true');
   }
 }
@@ -1459,7 +1482,7 @@ function initDomGame() {
 // --- Inicializacao ---
 
 function initializePage() {
-  // injectStaticData(); <- Removido: agora os textos estão fixos no HTML para melhor performance
+  injectStaticData(); // Reativado para cumprir requisito de Manipulação de Dados Dinâmicos
   // Atualiza o rótulo do botão de tema usando lookup dinâmico (mais resiliente)
   updateThemeButtonLabel();
 
