@@ -96,33 +96,6 @@ const welcomeForm = document.getElementById("welcomeForm");
 const visitorNameInput = document.getElementById("visitorName");
 const welcomeMessage = document.getElementById("welcomeMessage");
 
-let _routeDrawSvg = null;
-let LEG_WAYPOINTS = {};
-
-function initGlobalWaypoints() {
-    LEG_WAYPOINTS = JSON.parse(JSON.stringify(DEFAULT_LEG_WAYPOINTS));
-}
-function loadWaypointsOverrides() {}
-
-function _getOrCreateRouteSvg() {
-  const map = document.getElementById('game-map');
-  if (!map) return null;
-  let svg = document.getElementById('route-draw-canvas');
-  if (!svg) {
-    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.id = 'route-draw-canvas';
-    svg.setAttribute('viewBox', '0 0 100 100');
-    svg.setAttribute('preserveAspectRatio', 'none');
-    svg.style.position = 'absolute';
-    svg.style.top = '0'; svg.style.left = '0';
-    svg.style.width = '100%'; svg.style.height = '100%';
-    svg.style.pointerEvents = 'none';
-    svg.style.zIndex = '5';
-    map.appendChild(svg);
-  }
-  return svg;
-}
-
 function injectStaticData() {
   if (document.getElementById("personaName")) document.getElementById("personaName").textContent = PERSONA_NAME;
   if (document.getElementById("gameName")) document.getElementById("gameName").textContent = GAME_NAME;
@@ -1775,70 +1748,6 @@ function showGameResult(forceLoss) {
   document.getElementById('btn-retry').addEventListener('click', resetGame);
   var btnVerIdeal = document.getElementById('btn-ver-ideal');
   if (btnVerIdeal) btnVerIdeal.addEventListener('click', replayOptimalRoute);
-}
-
-function updateRouteDisplay() {
-  const display = document.getElementById('route-display');
-  const btnPartir = document.getElementById('btn-partir');
-  if (!display || !btnPartir) return;
-  display.textContent = selectedRoute.length
-    ? 'Ordem: ' + selectedRoute.map(function (stop, i) { return (i + 1) + '. ' + STUDENT_NAMES[stop]; }).join(' -> ') + ' -> Faculdade'
-    : 'Clique nos alunos para marcar a ordem de busca.';
-  btnPartir.disabled = selectedRoute.length < REQUIRED_STOPS;
-
-  const svg = _getOrCreateRouteSvg();
-  if (svg) {
-    svg.innerHTML = '';
-    if (selectedRoute.length > 0) {
-      const nodes = expandRouteNodes(selectedRoute);
-      let allWaypoints = [];
-      let current = nodes[0];
-      allWaypoints.push(STOP_POSITIONS[current]);
-      for (let i = 1; i < nodes.length; i++) {
-        const next = nodes[i];
-        const legKey = getLegKey(current, next);
-        const waypoints = LEG_WAYPOINTS[legKey] || [STOP_POSITIONS[next]];
-        allWaypoints = allWaypoints.concat(waypoints);
-        current = next;
-      }
-      if (allWaypoints.length >= 2) {
-        const ptsStr = allWaypoints.map(function (p) {
-          return percentNumber(p.left) + ',' + percentNumber(p.top);
-        }).join(' ');
-        const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        pl.setAttribute('points', ptsStr);
-        pl.setAttribute('fill', 'none');
-        pl.setAttribute('stroke', routeToolEnabled ? '#22c55e' : '#888');
-        pl.setAttribute('stroke-width', routeToolEnabled ? '0.8' : '0.5');
-        pl.setAttribute('stroke-linecap', 'round');
-        pl.setAttribute('stroke-linejoin', 'round');
-        svg.appendChild(pl);
-        allWaypoints.forEach(function (p, i) {
-          const isStop = Object.values(STOP_POSITIONS).some(function (sp) { return sp.top === p.top && sp.left === p.left; });
-          if (isStop || i === 0 || i === allWaypoints.length - 1) {
-            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            circle.setAttribute('cx', percentNumber(p.left));
-            circle.setAttribute('cy', percentNumber(p.top));
-            circle.setAttribute('r', i === 0 ? '1.2' : '0.8');
-            circle.setAttribute('fill', i === 0 ? '#facc15' : (routeToolEnabled ? '#22c55e' : '#888'));
-            circle.setAttribute('stroke', '#fff');
-            circle.setAttribute('stroke-width', '0.2');
-            svg.appendChild(circle);
-          }
-        });
-      }
-    }
-  }
-
-  if (!gameRunning) {
-    if (selectedRoute.length === 0) {
-      setGameFeedback('Marque os ' + REQUIRED_STOPS + ' alunos no mapa na ordem desejada.', '');
-    } else if (selectedRoute.length < REQUIRED_STOPS) {
-      setGameFeedback('Marcado ' + selectedRoute.length + ' de ' + REQUIRED_STOPS + '.', '');
-    } else {
-      setGameFeedback('Ordem definida! Clique em Partir.', 'good');
-    }
-  }
 }
 
 function initDomGame() {
