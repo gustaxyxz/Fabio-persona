@@ -6,12 +6,12 @@
  */
 
 // --- DADOS ESTÁTICOS (Requisito: Manipulação de Dados Estáticos via DOM) ---
-const SITE_NAME = "Rota";
-const PERSONA_NAME = "Fabio Alves";
-const GAME_NAME = "Rota Certa";
-const GAME_RELEASE_YEAR = 2026;
-const GAME_FOCUS = "encontrar a menor rota para levar ou buscar alunos dos seus enderecos ate a faculdade";
-const PREVIEW_LEVEL = "conceitual";
+const nomeApp = "Rota";
+const nomeMotorista = "Fabio Alves";
+const nomeJogo = "Rota Certa";
+const anoLancamento = 2026;
+const objetivoJogo = "encontrar a menor rota para levar ou buscar alunos dos seus enderecos ate a faculdade";
+const nívelProtótipo = "conceitual";
 
 // --- Parâmetros de Configuração ---
 const AGE_LIMIT = 5; // Idade mínima simbólica para o simulador
@@ -44,11 +44,11 @@ const welcomeMessage = document.getElementById("welcomeMessage");
  * Esta função garante que as informações globais sejam distribuídas pelo site.
  */
 function injectStaticData() {
-  if (document.getElementById("personaName")) document.getElementById("personaName").textContent = PERSONA_NAME;
-  if (document.getElementById("gameName")) document.getElementById("gameName").textContent = GAME_NAME;
-  if (document.getElementById("gameReleaseYear")) document.getElementById("gameReleaseYear").textContent = String(GAME_RELEASE_YEAR);
-  if (document.getElementById("gameFocus")) document.getElementById("gameFocus").textContent = GAME_FOCUS;
-  if (document.getElementById("siteNameFooter")) document.getElementById("siteNameFooter").textContent = SITE_NAME;
+  if (document.getElementById("personaName")) document.getElementById("personaName").textContent = nomeMotorista;
+  if (document.getElementById("gameName")) document.getElementById("gameName").textContent = nomeJogo;
+  if (document.getElementById("gameReleaseYear")) document.getElementById("gameReleaseYear").textContent = String(anoLancamento);
+  if (document.getElementById("gameFocus")) document.getElementById("gameFocus").textContent = objetivoJogo;
+  if (document.getElementById("siteNameFooter")) document.getElementById("siteNameFooter").textContent = nomeApp;
 }
 
 
@@ -188,9 +188,9 @@ function checkLaunchYear() {
   if (sessionStorage.getItem('rota_launched')) return;
   const currentYear = new Date().getFullYear();
 
-  // Compara o ano atual com a constante GAME_RELEASE_YEAR exigida pela rubrica
-  if (currentYear === GAME_RELEASE_YEAR) {
-    alert("Grande Lancamento: " + GAME_NAME + " - prototipo em nivel " + PREVIEW_LEVEL + ".");
+  // Compara o ano atual com a constante anoLancamento exigida pela rubrica
+  if (currentYear === anoLancamento) {
+    alert("Grande Lancamento: " + nomeJogo + " - prototipo em nivel " + nívelProtótipo + ".");
     sessionStorage.setItem('rota_launched', 'true');
   }
 }
