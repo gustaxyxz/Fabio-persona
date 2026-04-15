@@ -5,9 +5,9 @@ function enableStudentTagDrag() {
   let tagPositions = {};
   try {
     tagPositions = JSON.parse(localStorage.getItem('rota-student-tag-positions') || '{}');
-  } catch {}
+  } catch { }
 
-  document.querySelectorAll('.student-tag-top').forEach(function(tag) {
+  document.querySelectorAll('.student-tag-top').forEach(function (tag) {
     tag.style.cursor = 'grab';
     const btn = tag.closest('.map-point');
     if (!btn) return;
@@ -95,6 +95,33 @@ const ageGateButton = document.getElementById("ageGateButton");
 const welcomeForm = document.getElementById("welcomeForm");
 const visitorNameInput = document.getElementById("visitorName");
 const welcomeMessage = document.getElementById("welcomeMessage");
+
+let _routeDrawSvg = null;
+let LEG_WAYPOINTS = {};
+
+function initGlobalWaypoints() {
+    LEG_WAYPOINTS = JSON.parse(JSON.stringify(DEFAULT_LEG_WAYPOINTS));
+}
+function loadWaypointsOverrides() {}
+
+function _getOrCreateRouteSvg() {
+  const map = document.getElementById('game-map');
+  if (!map) return null;
+  let svg = document.getElementById('route-draw-canvas');
+  if (!svg) {
+    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.id = 'route-draw-canvas';
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.style.position = 'absolute';
+    svg.style.top = '0'; svg.style.left = '0';
+    svg.style.width = '100%'; svg.style.height = '100%';
+    svg.style.pointerEvents = 'none';
+    svg.style.zIndex = '5';
+    map.appendChild(svg);
+  }
+  return svg;
+}
 
 function injectStaticData() {
   if (document.getElementById("personaName")) document.getElementById("personaName").textContent = PERSONA_NAME;
@@ -274,11 +301,11 @@ function cloneWaypointMap(source) {
 }
 
 const DEFAULT_STOP_POSITIONS = {
-  'Garagem':        { top: '40.1%', left: '43.9%' },
-  'Faculdade':      { top: '48.1%', left: '68.8%' },
-  'Centro':         { top: '49.5%', left: '41.8%' },
-  'Paulo Grande':   { top: '36.8%', left: '58.8%' },
-  'Vila Nova':      { top: '68.8%', left: '52.6%' },
+  'Garagem': { top: '40.1%', left: '43.9%' },
+  'Faculdade': { top: '48.1%', left: '68.8%' },
+  'Centro': { top: '49.5%', left: '41.8%' },
+  'Paulo Grande': { top: '36.8%', left: '58.8%' },
+  'Vila Nova': { top: '68.8%', left: '52.6%' },
   'Jardim America': { top: '52.8%', left: '60.6%' }
 };
 
@@ -691,17 +718,17 @@ function bestOrderForPoints(stops) {
   if (stops.length === 0) return { order: [], distance: 0 };
   const permutations = [];
   function backtrack(curr, remaining) {
-      if (remaining.length === 0) { permutations.push(curr); return; }
-      for (let i = 0; i < remaining.length; i++) {
-          backtrack(curr.concat([remaining[i]]), remaining.slice(0, i).concat(remaining.slice(i + 1)));
-      }
+    if (remaining.length === 0) { permutations.push(curr); return; }
+    for (let i = 0; i < remaining.length; i++) {
+      backtrack(curr.concat([remaining[i]]), remaining.slice(0, i).concat(remaining.slice(i + 1)));
+    }
   }
   backtrack([], stops);
   let best = permutations[0];
   let minD = routeDistanceForOrder(best);
   for (let i = 1; i < permutations.length; i++) {
-      let d = routeDistanceForOrder(permutations[i]);
-      if (d < minD) { minD = d; best = permutations[i]; }
+    let d = routeDistanceForOrder(permutations[i]);
+    if (d < minD) { minD = d; best = permutations[i]; }
   }
   return { order: best, distance: minD };
 }
@@ -712,7 +739,7 @@ function bestOrderForSelection(selection) {
 
 function applyOptimalRoute() {
   if (gameRunning) return;
-  
+
   // Ordem pedida pelo usuário: Bruno -> André -> Carlos -> Diego
   // Mapeando para os nomes técnicos dos pontos:
   // Bruno: Paulo Grande
@@ -1004,16 +1031,16 @@ function routeDistanceForOrder(order) {
 function updatePointOrderBadges() {
   // Posições fixas dos nomes dos alunos (fornecidas pelo usuário)
   const fixedTagPositions = {
-    'Centro':        { left: '-12px', top: '-59px' },
-    'Paulo Grande':  { left: '-15px', top: '-52px' },
-    'Vila Nova':     { left: '-28px', top: '25px' },
-    'Jardim America':{ left: '-5px',  top: '26px' }
+    'Centro': { left: '-12px', top: '-59px' },
+    'Paulo Grande': { left: '-15px', top: '-52px' },
+    'Vila Nova': { left: '-28px', top: '25px' },
+    'Jardim America': { left: '-5px', top: '26px' }
   };
 
   // Limpa badges antigos
-  document.querySelectorAll('.student-tag-top .order-badge').forEach(function(b){ b.remove(); });
+  document.querySelectorAll('.student-tag-top .order-badge').forEach(function (b) { b.remove(); });
 
-  document.querySelectorAll('.student-tag-top').forEach(function(tag) {
+  document.querySelectorAll('.student-tag-top').forEach(function (tag) {
     tag.style.cursor = 'grab';
     const btn = tag.closest('.map-point');
     if (!btn) return;
@@ -1044,7 +1071,7 @@ function updatePointOrderBadges() {
   // Permite voltar ao modo manual ao clicar em Limpar rota
   const btnReset = document.getElementById('btn-reset-route');
   if (btnReset) {
-    btnReset.onclick = function() {
+    btnReset.onclick = function () {
       resetGame();
       // Reabilita escolha manual
       routeToolEnabled = false;
@@ -1090,7 +1117,7 @@ function _redrawRouteSvg() {
 
   if (allWaypoints.length < 2) return;
 
-  const ptsStr = allWaypoints.map(function(p) {
+  const ptsStr = allWaypoints.map(function (p) {
     return percentNumber(p.left) + ',' + percentNumber(p.top);
   }).join(' ');
 
@@ -1104,11 +1131,11 @@ function _redrawRouteSvg() {
   svg.appendChild(pl);
 
   // Bolinhas nos pontos principais
-  allWaypoints.forEach(function(p, i) {
+  allWaypoints.forEach(function (p, i) {
     const isFirst = i === 0;
     const isLast = i === allWaypoints.length - 1;
     // se for um ponto de parada (Stop)
-    const isStop = Object.values(STOP_POSITIONS).some(function(sp) { return sp.top === p.top && sp.left === p.left; });
+    const isStop = Object.values(STOP_POSITIONS).some(function (sp) { return sp.top === p.top && sp.left === p.left; });
 
     if (isStop || isFirst || isLast) {
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -1338,7 +1365,7 @@ function updateRouteDisplay() {
         current = next;
       }
       if (allWaypoints.length >= 2) {
-        const ptsStr = allWaypoints.map(function(p) {
+        const ptsStr = allWaypoints.map(function (p) {
           return percentNumber(p.left) + ',' + percentNumber(p.top);
         }).join(' ');
         const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
@@ -1350,10 +1377,10 @@ function updateRouteDisplay() {
         pl.setAttribute('stroke-linejoin', 'round');
         svg.appendChild(pl);
         // Bolinhas nos pontos principais
-        allWaypoints.forEach(function(p, i) {
+        allWaypoints.forEach(function (p, i) {
           const isFirst = i === 0;
           const isLast = i === allWaypoints.length - 1;
-          const isStop = Object.values(STOP_POSITIONS).some(function(sp) { return sp.top === p.top && sp.left === p.left; });
+          const isStop = Object.values(STOP_POSITIONS).some(function (sp) { return sp.top === p.top && sp.left === p.left; });
           if (isStop || isFirst || isLast) {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', percentNumber(p.left));
@@ -1508,13 +1535,13 @@ function resetGame() {
   setGameFeedback('Selecione quais alunos vao embarcar e em qual ordem. Depois clique em Partir.', '');
   updateRouteDisplay();
   // Garante a limpeza total das classes e badges
-  document.querySelectorAll('.map-point').forEach(function(b) {
+  document.querySelectorAll('.map-point').forEach(function (b) {
     b.classList.remove('selected', 'collected', 'ordered', 'is-boarding');
   });
   updatePointOrderBadges();
-  
+
   // CORREÇÃO: Restaura a interatividade dos nomes dos alunos
-  document.querySelectorAll('.student-tag-top').forEach(function(tag) {
+  document.querySelectorAll('.student-tag-top').forEach(function (tag) {
     tag.style.pointerEvents = 'auto';
     tag.style.cursor = 'grab';
   });
@@ -1525,7 +1552,7 @@ function resetGame() {
     btnRota.style.display = routeToolUnlocked ? 'inline-flex' : 'none';
   }
 
-  try { enableStudentTagDrag(); } catch (e) {}
+  try { enableStudentTagDrag(); } catch (e) { }
 }
 
 async function startRoute() {
@@ -1568,17 +1595,17 @@ async function startRoute() {
 
   // Desativa interacoes nos nomes dos alunos enquanto a van estiver em rota
   try {
-    document.querySelectorAll('.student-tag-top').forEach(function(tag) {
+    document.querySelectorAll('.student-tag-top').forEach(function (tag) {
       if (!tag) return;
       // salva handlers para possivel restauracao
-      try { tag._onmousedown_backup = tag.onmousedown; } catch (e) {}
-      try { tag._ondragstart_backup = tag.ondragstart; } catch (e) {}
+      try { tag._onmousedown_backup = tag.onmousedown; } catch (e) { }
+      try { tag._ondragstart_backup = tag.ondragstart; } catch (e) { }
       tag.style.pointerEvents = 'none';
       tag.style.cursor = 'default';
       tag.onmousedown = null;
-      tag.ondragstart = function() { return false; };
+      tag.ondragstart = function () { return false; };
     });
-  } catch (e) {}
+  } catch (e) { }
 
   if (hud) { hud.hidden = false; updateHud(); }
   map.classList.add('is-driving');
@@ -1637,7 +1664,7 @@ async function startRoute() {
         await sleep(travelMsFinal);
         prevPos = finalTarget;
       }
-    } catch (e) {}
+    } catch (e) { }
 
     await tryCollectStudentsAtPosition(STOP_POSITIONS[stop], collectedStops);
 
@@ -1678,7 +1705,7 @@ function showGameResult(forceLoss) {
 
   const aborted = forceLoss === 'fuel' || forceLoss === 'sleep';
   const won = !aborted && delta <= 0.4;
-  
+
   // Desbloqueia a ferramenta Rota se o jogador não conseguiu a rota perfeita
   if (!won) {
     routeToolUnlocked = true;
@@ -1695,8 +1722,8 @@ function showGameResult(forceLoss) {
     const isVeryTired = sleepFinal > 80;
     icon = isVeryTired ? '🥱' : '⛽';
     title = isVeryTired ? 'Exaustão extrema!' : 'Combustivel acabou!';
-    subtitle = isVeryTired 
-      ? 'O cansaco excessivo tornou a viagem lenta e o diesel acabou antes da hora!' 
+    subtitle = isVeryTired
+      ? 'O cansaco excessivo tornou a viagem lenta e o diesel acabou antes da hora!'
       : 'A van parou no meio da rota. Fabio nao chegou a Faculdade.';
     desc = 'A ordem escolhida consumiu combustivel demais. Melhor ordem: ' + bestLabel + '.';
   } else if (won) {
@@ -1750,6 +1777,70 @@ function showGameResult(forceLoss) {
   if (btnVerIdeal) btnVerIdeal.addEventListener('click', replayOptimalRoute);
 }
 
+function updateRouteDisplay() {
+  const display = document.getElementById('route-display');
+  const btnPartir = document.getElementById('btn-partir');
+  if (!display || !btnPartir) return;
+  display.textContent = selectedRoute.length
+    ? 'Ordem: ' + selectedRoute.map(function (stop, i) { return (i + 1) + '. ' + STUDENT_NAMES[stop]; }).join(' -> ') + ' -> Faculdade'
+    : 'Clique nos alunos para marcar a ordem de busca.';
+  btnPartir.disabled = selectedRoute.length < REQUIRED_STOPS;
+
+  const svg = _getOrCreateRouteSvg();
+  if (svg) {
+    svg.innerHTML = '';
+    if (selectedRoute.length > 0) {
+      const nodes = expandRouteNodes(selectedRoute);
+      let allWaypoints = [];
+      let current = nodes[0];
+      allWaypoints.push(STOP_POSITIONS[current]);
+      for (let i = 1; i < nodes.length; i++) {
+        const next = nodes[i];
+        const legKey = getLegKey(current, next);
+        const waypoints = LEG_WAYPOINTS[legKey] || [STOP_POSITIONS[next]];
+        allWaypoints = allWaypoints.concat(waypoints);
+        current = next;
+      }
+      if (allWaypoints.length >= 2) {
+        const ptsStr = allWaypoints.map(function (p) {
+          return percentNumber(p.left) + ',' + percentNumber(p.top);
+        }).join(' ');
+        const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        pl.setAttribute('points', ptsStr);
+        pl.setAttribute('fill', 'none');
+        pl.setAttribute('stroke', routeToolEnabled ? '#22c55e' : '#888');
+        pl.setAttribute('stroke-width', routeToolEnabled ? '0.8' : '0.5');
+        pl.setAttribute('stroke-linecap', 'round');
+        pl.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(pl);
+        allWaypoints.forEach(function (p, i) {
+          const isStop = Object.values(STOP_POSITIONS).some(function (sp) { return sp.top === p.top && sp.left === p.left; });
+          if (isStop || i === 0 || i === allWaypoints.length - 1) {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', percentNumber(p.left));
+            circle.setAttribute('cy', percentNumber(p.top));
+            circle.setAttribute('r', i === 0 ? '1.2' : '0.8');
+            circle.setAttribute('fill', i === 0 ? '#facc15' : (routeToolEnabled ? '#22c55e' : '#888'));
+            circle.setAttribute('stroke', '#fff');
+            circle.setAttribute('stroke-width', '0.2');
+            svg.appendChild(circle);
+          }
+        });
+      }
+    }
+  }
+
+  if (!gameRunning) {
+    if (selectedRoute.length === 0) {
+      setGameFeedback('Marque os ' + REQUIRED_STOPS + ' alunos no mapa na ordem desejada.', '');
+    } else if (selectedRoute.length < REQUIRED_STOPS) {
+      setGameFeedback('Marcado ' + selectedRoute.length + ' de ' + REQUIRED_STOPS + '.', '');
+    } else {
+      setGameFeedback('Ordem definida! Clique em Partir.', 'good');
+    }
+  }
+}
+
 function initDomGame() {
   if (!document.getElementById('btn-partir')) return;
   if (gameInitialized) { resetGame(); return; }
@@ -1796,12 +1887,12 @@ function initializePage() {
   injectStaticData();
   // Atualiza o rótulo do botão de tema usando lookup dinâmico (mais resiliente)
   updateThemeButtonLabel();
-  
+
   // Inicialização do estado de visibilidade baseado em locks salvos
   updatePreviewVisibility();
 
   // Ativa o arraste dos nomes dos alunos (inicialização centralizada)
-  try { enableStudentTagDrag(); } catch (e) {}
+  try { enableStudentTagDrag(); } catch (e) { }
 
   checkLaunchYear();
   initGlobalWaypoints();
@@ -1812,8 +1903,8 @@ function initializePage() {
   try {
     const themeBtn = document.getElementById('themeToggle');
     if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
-  } catch (e) {}
-  
+  } catch (e) { }
+
   const ageGateButtonGlobal = document.getElementById('ageGateButton');
   if (ageGateButtonGlobal) ageGateButtonGlobal.addEventListener('click', validateAge);
 

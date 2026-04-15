@@ -2,6 +2,7 @@
 .map-point {
   position: relative;
 }
+
 :root {
   color-scheme: light;
   --bg: #f3f5f9;
@@ -111,9 +112,17 @@ p {
   flex-wrap: wrap;
 }
 
-.brand { justify-self: start; }
-.menu { justify-self: center; }
-.top-actions { justify-self: end; }
+.brand {
+  justify-self: start;
+}
+
+.menu {
+  justify-self: center;
+}
+
+.top-actions {
+  justify-self: end;
+}
 
 .menu a {
   color: var(--muted);
@@ -174,9 +183,17 @@ p {
 }
 
 @keyframes buttonPulse {
-  0% { box-shadow: 0 0 0 0 rgba(31, 107, 255, 0.5); }
-  70% { box-shadow: 0 0 0 12px rgba(31, 107, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(31, 107, 255, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(31, 107, 255, 0.5);
+  }
+
+  70% {
+    box-shadow: 0 0 0 12px rgba(31, 107, 255, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(31, 107, 255, 0);
+  }
 }
 
 .page {
@@ -663,11 +680,12 @@ body[data-theme="dark"] .game-map::after {
   font-weight: 700;
   padding: 0.1em 0.7em;
   margin: 0.2em 0 0 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   pointer-events: none;
   position: relative;
   z-index: 2;
 }
+
 .student-tag-top {
   position: absolute;
   left: 50%;
@@ -1413,7 +1431,10 @@ body[data-theme="dark"] .game-map::after {
 /* Route Editor */
 #waypoint-editor-layer {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 100;
 }
@@ -1440,17 +1461,23 @@ body[data-theme="dark"] .game-map::after {
 }
 
 .route-editor-row {
-  display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.6rem;
 }
 
 .route-editor-field {
-  font-size: 0.85rem; width: 80px; font-weight: 600;
+  font-size: 0.85rem;
+  width: 80px;
+  font-weight: 600;
 }
 
-.route-editor-select, .route-editor-textarea {
+.route-editor-select,
+.route-editor-textarea {
   flex: 1;
   background: #0f172a;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   border-radius: 6px;
   padding: 0.4rem;
@@ -1466,31 +1493,45 @@ body[data-theme="dark"] .game-map::after {
 }
 
 .route-editor-mouse-toggle {
-  display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; margin-top: 0.5rem; color: #facc15;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  color: #facc15;
 }
 
 .route-editor-actions {
-  display: flex; gap: 0.6rem; margin-top: 0.8rem;
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
 }
 
 .route-editor-status {
-  font-size: 0.75rem; color: #4ade80; margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #4ade80;
+  margin-top: 0.5rem;
 }
 
-.waypoint-handle, .line-endpoint-handle {
+.waypoint-handle,
+.line-endpoint-handle {
   position: absolute;
-  width: 20px; height: 20px;
+  width: 20px;
+  height: 20px;
   background: #22c55e;
   border: 2px solid #fff;
   border-radius: 50%;
   color: #fff;
-  font-size: 10px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform: translate(-50%, -50%);
   cursor: grab;
   pointer-events: auto;
   z-index: 101;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .line-endpoint-handle {
@@ -1498,7 +1539,8 @@ body[data-theme="dark"] .game-map::after {
   color: #000;
 }
 
-.waypoint-handle:active, .line-endpoint-handle:active {
+.waypoint-handle:active,
+.line-endpoint-handle:active {
   cursor: grabbing;
   transform: translate(-50%, -50%) scale(1.4);
 }
@@ -1521,7 +1563,10 @@ body[data-theme="dark"] .game-map::after {
 
 .age-overlay {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1569,6 +1614,13 @@ body[data-theme="dark"] .game-map::after {
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
