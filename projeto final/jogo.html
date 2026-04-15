@@ -33,7 +33,6 @@
         <p>Escolha a ordem dos pontos de coleta e guie a van do Fábio pelo menor caminho até a faculdade.</p>
       </div>
       <p id="ageGateStatus" class="status">Preveja a rota antes de começar.</p>
-      <div id="previewGrid" class="preview-grid" data-sensitive="true"></div>
 
       <!-- Fase 1: Identificação (Nome) -->
       <div id="game-identity-gate" class="identity-card">
@@ -53,6 +52,9 @@
           <button id="cardAgeGateButton" class="button button-main" type="button">Validar minha idade agora</button>
         </div>
       </div>
+      
+      <!-- Cards de Missão (Briefing Imersivo) -->
+      <div id="previewGrid" class="preview-grid" data-sensitive="true" style="margin: 2rem 0;"></div>
       
       <!-- Removido overlay fixo, texto será movido para o overlay de idade -->
         <div id="game-container" aria-live="polite" style="position:relative;">
@@ -106,7 +108,7 @@
             <div id="game-controls">
               <span id="route-display">Selecione a ordem dos alunos e inicie a rota</span>
               <div id="game-btn-row">
-                <button class="button button-app"   id="btn-rota-otima"    type="button" title="Usar a ferramenta Rota para mostrar o melhor caminho">Usar Ferramenta Rota</button>
+                <button class="button button-app"   id="btn-rota-otima"    type="button" title="Usar a ferramenta Rota para mostrar o melhor caminho" style="display: none;">Usar Ferramenta Rota</button>
                 <button class="button button-ghost" id="btn-reset-route"   type="button">Limpar rota</button>
                 <button class="button button-main"  id="btn-partir"        type="button" disabled>Partir</button>
               </div>

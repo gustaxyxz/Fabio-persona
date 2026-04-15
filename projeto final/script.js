@@ -1,27 +1,4 @@
-// Garante que o blur é removido ao validar idade em qualquer botão, sem duplicar handlers
-window.addEventListener('DOMContentLoaded', function() {
-  updatePreviewVisibility();
-  function bindAgeGateButton(id) {
-    var btn = document.getElementById(id);
-    if (btn) {
-      btn.removeEventListener('click', validateAge);
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        validateAge();
-      });
-    }
-  }
-  bindAgeGateButton('ageGateButton');
-  bindAgeGateButton('cardAgeGateButton');
-  var overlay = document.getElementById('age-gate-overlay');
-  if (overlay) {
-    overlay.removeEventListener('click', validateAge);
-    overlay.addEventListener('click', function(e) {
-      e.preventDefault();
-      validateAge();
-    });
-  }
-});
+// (Listeners and visibility initialization centralized in initializePage)
 // Permite arrastar o nome dos alunos manualmente no mapa
 function enableStudentTagDrag() {
   // Carrega posições salvas
@@ -79,24 +56,11 @@ function enableStudentTagDrag() {
       document.addEventListener('mouseup', onMouseUp);
       tag.onmouseup = onMouseUp;
     };
-    // Função utilitária para copiar as coordenadas dos nomes dos alunos para o console
-    window.copiarCoordenadasNomesAlunos = function() {
-      [...document.querySelectorAll('.map-point')].forEach(btn => {
-        const tag = btn.querySelector('.student-tag-top');
-        if (tag) {
-          console.log(btn.dataset.stop + ': left=' + tag.style.left + ', top=' + tag.style.top);
-        }
-      });
-      alert('Coordenadas dos nomes dos alunos copiadas no console!');
-    };
     tag.ondragstart = function () { return false; };
   });
 }
 
-// Ativa o drag manual ao carregar o jogo
-window.addEventListener('DOMContentLoaded', function() {
-  enableStudentTagDrag();
-});
+// enableStudentTagDrag() será chamado em initializePage
 const SITE_NAME = "Rota";
 const PERSONA_NAME = "Fabio Alves";
 const GAME_NAME = "Rota";
@@ -106,21 +70,26 @@ const PREVIEW_LEVEL = "conceitual";
 const AGE_LIMIT = 5;
 const UNLOCKED_PREVIEW_CARDS = [
   {
-    title: "Enderecos",
-    description: "Centro e Paulo Grande"
+    title: "Passageiros",
+    description: "André, Bruno, Carlos e Diego"
   },
   {
-    title: "Destino",
-    description: "Faculdade"
+    title: "Destino Final",
+    description: "Faculdade Integrado"
   },
   {
-    title: "Objetivo",
-    description: "Menor distancia total"
+    title: "Efetividade",
+    description: "Menor consumo de diesel"
   }
 ];
 
+// Feature toggles (úteis para apresentação)
+// Defina true para reativar o editor de waypoints durante debugging
+const ENABLE_WAYPOINT_EDITOR = false;
+
 const previewGrid = document.getElementById("previewGrid");
 const ageGateStatus = document.getElementById("ageGateStatus");
+let routeToolUnlocked = false; // Ferramenta desabilitada inicialmente até uma falha
 const themeToggle = document.getElementById("themeToggle");
 const ageGateButton = document.getElementById("ageGateButton");
 const welcomeForm = document.getElementById("welcomeForm");
@@ -136,10 +105,12 @@ function injectStaticData() {
 }
 
 function updateThemeButtonLabel() {
-  const isDarkTheme = document.body.dataset.theme === "dark";
-  themeToggle.textContent = isDarkTheme ? "Tema claro" : "Tema escuro";
-  themeToggle.setAttribute("aria-label", isDarkTheme ? "Ativar tema claro" : "Ativar tema escuro");
-  themeToggle.setAttribute("aria-pressed", isDarkTheme ? "true" : "false");
+  var el = document.getElementById('themeToggle');
+  if (!el) return;
+  var isDarkTheme = document.body.dataset.theme === 'dark';
+  el.textContent = isDarkTheme ? 'Tema claro' : 'Tema escuro';
+  el.setAttribute('aria-label', isDarkTheme ? 'Ativar tema claro' : 'Ativar tema escuro');
+  el.setAttribute('aria-pressed', isDarkTheme ? 'true' : 'false');
 }
 
 function toggleTheme() {
@@ -190,19 +161,18 @@ function updatePreviewVisibility() {
     });
   }
 
-  // Map blur target: apenas o mapa é borrado, o overlay fica fora dele
+  // Map blur target: apenas o mapa é borrado — baseia-se somente na validação da idade
   const mapBlurTarget = document.getElementById('map-blur-target');
-  const isReady = hasAgeGate && hasIdentity;
   if (mapBlurTarget) {
-    mapBlurTarget.style.filter = isReady ? "" : "blur(8px)";
-    mapBlurTarget.style.userSelect = isReady ? "" : "none";
-    mapBlurTarget.style.pointerEvents = isReady ? "" : "none";
+    mapBlurTarget.style.filter = hasAgeGate ? "" : "blur(8px)";
+    mapBlurTarget.style.userSelect = hasAgeGate ? "" : "none";
+    mapBlurTarget.style.pointerEvents = hasAgeGate ? "" : "none";
   }
 
-  // Age Overlay: mostrar quando o jogo NÃO estiver pronto (precisa identificar ou validar)
+  // Age Overlay: mostrar até que a idade seja validada (independe do nome)
   const ageGateOverlay = document.getElementById('age-gate-overlay');
   if (ageGateOverlay) {
-    ageGateOverlay.style.display = isReady ? "none" : "flex";
+    ageGateOverlay.style.display = hasAgeGate ? "none" : "flex";
   }
 
   if (ageGateStatus) {
@@ -302,31 +272,6 @@ function cloneWaypointMap(source) {
     return acc;
   }, {});
 }
-
-function pointDistance(p1, p2) {
-  const dx = percentNumber(p1.left) - percentNumber(p2.left);
-  const dy = percentNumber(p1.top) - percentNumber(p2.top);
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-function getLegKey(from, to) {
-  return from + '>' + to;
-}
-
-function legDistance(fromName, toName) {
-  const key = getLegKey(fromName, toName);
-  const points = LEG_WAYPOINTS[key] || [];
-  let dist = 0;
-  let prev = STOP_POSITIONS[fromName];
-  for (let i = 0; i < points.length; i++) {
-    dist += pointDistance(prev, points[i]);
-    prev = points[i];
-  }
-  dist += pointDistance(prev, STOP_POSITIONS[toName]);
-  return dist;
-}
-
-
 
 const DEFAULT_STOP_POSITIONS = {
   'Garagem':        { top: '40.1%', left: '43.9%' },
@@ -438,14 +383,14 @@ const DEFAULT_LEG_WAYPOINTS = {
   "Jardim America>Vila Nova": [
     { "top": "54.8%", "left": "60.0%" },
     { "top": "63.3%", "left": "49.7%" },
-    { "top": "64.6%", "left": "48.4%" },
+    { "top": "64.7%", "left": "48.1%" },
     { "top": "65.8%", "left": "49.4%" },
     { "top": "69.0%", "left": "53.0%" }
   ],
   "Vila Nova>Faculdade": [
     { "top": "69.3%", "left": "54.0%" },
-    { "top": "65.9%", "left": "49.9%" },
-    { "top": "64.2%", "left": "48.8%" },
+    { "top": "66.3%", "left": "50.0%" },
+    { "top": "64.5%", "left": "48.0%" },
     { "top": "62.5%", "left": "50.3%" },
     { "top": "48.1%", "left": "68.8%" }
   ],
@@ -478,7 +423,8 @@ const VAN_FORWARD_OFFSET_PCT = 0;
 const VAN_SIDE_OFFSET_PCT = 0;
 const VAN_CURVE_STEP = 1.25;
 const STOP_WAIT_MS = 900;
-const PICKUP_RADIUS = 4;
+const PICKUP_WAIT_MS = 1200; // tempo de parada ao recolher um aluno (ms)
+const PICKUP_RADIUS = 1.2;   // distância em percentuais para considerar "perto o suficiente"
 
 let audioCtx = null;
 let engineLoop = null;
@@ -486,9 +432,9 @@ const EFFECT_GAIN_MULTIPLIER = 1.9;
 const MAX_EFFECT_GAIN = 0.16;
 const ENGINE_MASTER_GAIN = 0.07;
 
-const FUEL_PER_UNIT = 0.5;
+const FUEL_PER_UNIT = 0.35; // reduz consumo para dar mais tempo ao jogador
 const SLEEP_PER_UNIT = 0.55;
-const HARD_MODE_INITIAL_FUEL = 62;
+const HARD_MODE_INITIAL_FUEL = 72; // aumenta reserva no modo desafio
 const HARD_MODE_INITIAL_SLEEP = 22;
 const HARD_MODE_FUEL_MULTIPLIER = 2.1;
 const HARD_MODE_SLEEP_MULTIPLIER = 2.0;
@@ -645,8 +591,8 @@ function updateMouseEditorMode() {
   if (map) map.classList.toggle('is-editing-lines', routeEditorState.enabled && routeEditorState.editMode === 'lines');
   renderWaypointHandles();
 }
-
 function buildWaypointsEditorPanel() {
+  if (!ENABLE_WAYPOINT_EDITOR) return;
   const controls = document.getElementById('game-controls');
   if (!controls || document.getElementById('route-waypoints-editor')) return;
   const panel = document.createElement('details');
@@ -741,18 +687,6 @@ function offsetVanPosition(pos, rawAngle) {
   const dy = Math.sin(radians) * VAN_FORWARD_OFFSET_PCT + Math.cos(radians) * VAN_SIDE_OFFSET_PCT;
   return percentPoint(percentNumber(pos.top) + dy, percentNumber(pos.left) + dx);
 }
-
-function routeDistanceForOrder(order) {
-  let prev = 'Garagem';
-  let total = 0;
-  for (let i = 0; i < order.length; i++) {
-    total += shortestDistance(prev, order[i]);
-    prev = order[i];
-  }
-  total += shortestDistance(prev, 'Faculdade');
-  return total;
-}
-
 function bestOrderForPoints(stops) {
   if (stops.length === 0) return { order: [], distance: 0 };
   const permutations = [];
@@ -786,6 +720,11 @@ function applyOptimalRoute() {
   // Carlos: Vila Nova
   // Diego: Jardim America
   selectedRoute = ['Paulo Grande', 'Centro', 'Vila Nova', 'Jardim America'];
+
+  // Ativa a ferramenta Rota (destacar em verde) e atualizar visual dos botões no mapa
+  routeToolEnabled = true;
+  const rotaBtn = document.getElementById('btn-rota-otima');
+  if (rotaBtn) rotaBtn.textContent = 'Ferramenta Rota (ativa)';
 
   // Atualizar visual dos botões no mapa
   document.querySelectorAll('.stop-btn').forEach(function (btn) {
@@ -1459,20 +1398,29 @@ async function collectStudent(stopName, collectedStops) {
   btn.style.pointerEvents = 'none';
   collectedStops.add(stopName);
   playPickupSound();
-  // Parada mais longa: van "pausa" ao coletar aluno
+  // Parada mais longa: alinhar a van exatamente ao ponto e pausar
   const van = document.getElementById('van-icon');
   if (van) {
     const oldTransition = van.style.transition;
-    van.style.transition = 'none';
-    const oldTop = van.style.top;
-    const oldLeft = van.style.left;
-    // Efeito de parada mais perceptível
-    van.style.transform += ' scale(1.14)';
-    await sleep(520);
-    van.style.transform = van.style.transform.replace(' scale(1.14)', '');
-    van.style.transition = oldTransition;
-    van.style.top = oldTop;
-    van.style.left = oldLeft;
+    try {
+      const finalTarget = STOP_POSITIONS[stopName];
+      // Força alinhamento exato
+      van.style.transition = 'none';
+      if (finalTarget) {
+        van.style.top = finalTarget.top;
+        van.style.left = finalTarget.left;
+      }
+      const angle = Number(van.dataset.angle || 0);
+      const flip = Number(van.dataset.flip || 1);
+      // Aplica efeito de escala preservando o translateX(-50%) do transform
+      van.style.transition = 'transform 260ms ease';
+      van.style.transform = buildVanTransform(angle, flip) + ' scale(1.14)';
+      await sleep(PICKUP_WAIT_MS);
+      van.style.transform = buildVanTransform(angle, flip);
+      van.style.transition = oldTransition || '';
+    } catch (e) {
+      van.style.transition = oldTransition;
+    }
   }
   await sleep(180);
   window.setTimeout(function () {
@@ -1559,6 +1507,25 @@ function resetGame() {
   if (btn) btn.textContent = 'Usar Ferramenta Rota';
   setGameFeedback('Selecione quais alunos vao embarcar e em qual ordem. Depois clique em Partir.', '');
   updateRouteDisplay();
+  // Garante a limpeza total das classes e badges
+  document.querySelectorAll('.map-point').forEach(function(b) {
+    b.classList.remove('selected', 'collected', 'ordered', 'is-boarding');
+  });
+  updatePointOrderBadges();
+  
+  // CORREÇÃO: Restaura a interatividade dos nomes dos alunos
+  document.querySelectorAll('.student-tag-top').forEach(function(tag) {
+    tag.style.pointerEvents = 'auto';
+    tag.style.cursor = 'grab';
+  });
+
+  // Mostra a ferramenta Rota apenas se foi desbloqueada (após uma falha ou rota ruim)
+  const btnRota = document.getElementById('btn-rota-otima');
+  if (btnRota) {
+    btnRota.style.display = routeToolUnlocked ? 'inline-flex' : 'none';
+  }
+
+  try { enableStudentTagDrag(); } catch (e) {}
 }
 
 async function startRoute() {
@@ -1599,6 +1566,20 @@ async function startRoute() {
   document.getElementById('btn-partir').disabled = true;
   document.getElementById('btn-reset-route').disabled = true;
 
+  // Desativa interacoes nos nomes dos alunos enquanto a van estiver em rota
+  try {
+    document.querySelectorAll('.student-tag-top').forEach(function(tag) {
+      if (!tag) return;
+      // salva handlers para possivel restauracao
+      try { tag._onmousedown_backup = tag.onmousedown; } catch (e) {}
+      try { tag._ondragstart_backup = tag.ondragstart; } catch (e) {}
+      tag.style.pointerEvents = 'none';
+      tag.style.cursor = 'default';
+      tag.onmousedown = null;
+      tag.ondragstart = function() { return false; };
+    });
+  } catch (e) {}
+
   if (hud) { hud.hidden = false; updateHud(); }
   map.classList.add('is-driving');
   setGameFeedback(
@@ -1625,16 +1606,14 @@ async function startRoute() {
       for (let step = 0; step < waypoints.length && !routeAborted; step++) {
         const pos = waypoints[step];
         const stepDist = pointDistance(prevPos, pos);
-        fuelCurrent -= fuelPerUnit * stepDist;
-        sleepMeter += sleepPerUnit * stepDist;
+        // Penalidade de sono: quanto mais cansado, mais combustível gasta (até 50% de aumento)
+        const sleepFuelPenalty = 1 + (sleepMeter / 100) * 0.5;
+        fuelCurrent -= fuelPerUnit * stepDist * sleepFuelPenalty;
+        sleepMeter = Math.min(100, sleepMeter + sleepPerUnit * stepDist);
         updateHud();
 
         if (fuelCurrent <= 0) {
           routeAborted = 'fuel';
-          break;
-        }
-        if (sleepMeter >= 100) {
-          routeAborted = 'sleep';
           break;
         }
 
@@ -1647,6 +1626,18 @@ async function startRoute() {
     }
 
     if (routeAborted) break;
+
+    // Garante que a van finalize o trecho exatamente na posicao do ponto (evita parar antes)
+    try {
+      const finalTarget = STOP_POSITIONS[stop];
+      if (finalTarget && pointDistance(prevPos, finalTarget) > 0.01) {
+        const travelMsFinal = stepDurationMs(prevPos, finalTarget, sleepMeter / 100);
+        van.dataset.legFlip = String(uprightHeading(vanAngle(prevPos, finalTarget) + VAN_HEADING_OFFSET_DEG).flip);
+        setVanPose(van, prevPos, finalTarget, travelMsFinal);
+        await sleep(travelMsFinal);
+        prevPos = finalTarget;
+      }
+    } catch (e) {}
 
     await tryCollectStudentsAtPosition(STOP_POSITIONS[stop], collectedStops);
 
@@ -1666,9 +1657,6 @@ async function startRoute() {
 
   if (routeAborted === 'fuel') {
     playFuelOutSound();
-    await sleep(200);
-  } else if (routeAborted === 'sleep') {
-    playSleepCrashSound();
     await sleep(200);
   }
 
@@ -1690,6 +1678,12 @@ function showGameResult(forceLoss) {
 
   const aborted = forceLoss === 'fuel' || forceLoss === 'sleep';
   const won = !aborted && delta <= 0.4;
+  
+  // Desbloqueia a ferramenta Rota se o jogador não conseguiu a rota perfeita
+  if (!won) {
+    routeToolUnlocked = true;
+  }
+
   const showRouteToolCta = !won && !aborted;
   const wonWithTool = won && routeToolEnabled;
 
@@ -1698,15 +1692,13 @@ function showGameResult(forceLoss) {
 
   var icon, title, subtitle, desc;
   if (forceLoss === 'fuel') {
-    icon = '&#9888;';
-    title = 'Combustivel acabou!';
-    subtitle = 'A van parou no meio da rota. Fabio nao chegou a Faculdade.';
+    const isVeryTired = sleepFinal > 80;
+    icon = isVeryTired ? '🥱' : '⛽';
+    title = isVeryTired ? 'Exaustão extrema!' : 'Combustivel acabou!';
+    subtitle = isVeryTired 
+      ? 'O cansaco excessivo tornou a viagem lenta e o diesel acabou antes da hora!' 
+      : 'A van parou no meio da rota. Fabio nao chegou a Faculdade.';
     desc = 'A ordem escolhida consumiu combustivel demais. Melhor ordem: ' + bestLabel + '.';
-  } else if (forceLoss === 'sleep') {
-    icon = 'ZZZ';
-    title = 'Fabio dormiu ao volante!';
-    subtitle = 'A van parou no meio da rota. Rota longa demais deixou Fabio sonolento.';
-    desc = 'A ordem escolhida causou sonolencia excessiva. Melhor ordem: ' + bestLabel + '.';
   } else if (won) {
     icon = 'OK';
     title = 'Rota otimizada!';
@@ -1764,7 +1756,7 @@ function initDomGame() {
   gameInitialized = true;
 
   ensureStreetSegments();
-  buildWaypointsEditorPanel();
+  if (ENABLE_WAYPOINT_EDITOR) buildWaypointsEditorPanel();
 
   resetGame();
 
@@ -1796,23 +1788,31 @@ function initDomGame() {
 }
 
 // --- Removidas ferramentas temporarias de desenho --- 
-function toggleManualDraw() { }
+
 
 // --- Inicializacao ---
 
 function initializePage() {
   injectStaticData();
-  if (themeToggle) updateThemeButtonLabel();
+  // Atualiza o rótulo do botão de tema usando lookup dinâmico (mais resiliente)
+  updateThemeButtonLabel();
   
   // Inicialização do estado de visibilidade baseado em locks salvos
   updatePreviewVisibility();
+
+  // Ativa o arraste dos nomes dos alunos (inicialização centralizada)
+  try { enableStudentTagDrag(); } catch (e) {}
 
   checkLaunchYear();
   initGlobalWaypoints();
   loadWaypointsOverrides();
   initDomGame();
 
-  if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
+  // Anexa listener ao botão de tema usando lookup dinâmico
+  try {
+    const themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+  } catch (e) {}
   
   const ageGateButtonGlobal = document.getElementById('ageGateButton');
   if (ageGateButtonGlobal) ageGateButtonGlobal.addEventListener('click', validateAge);
@@ -1829,3 +1829,4 @@ function initializePage() {
 }
 
 initializePage();
+// fim do arquivo
