@@ -1,13 +1,12 @@
+/**
+ * PROJETO: Rota Certa
+ * PERSONA: Fábio Alves (Motorista de transporte universitário)
+ * PROBLEMA: Cansaço extremo e rotas ineficientes que geram gastos de diesel.
+ * SOLUÇÃO: Algoritmo de Dijkstra para encontrar o menor trajeto entre pontos de coleta.
+ */
 
-
-// enableStudentTagDrag() será chamado em initializePage
-const SITE_NAME = "Rota";
-const PERSONA_NAME = "Fabio Alves";
-const GAME_NAME = "Rota Certa";
-const GAME_RELEASE_YEAR = 2026;
-const GAME_FOCUS = "encontrar a menor rota para levar ou buscar alunos dos seus enderecos ate a faculdade";
-const PREVIEW_LEVEL = "conceitual";
-const AGE_LIMIT = 5;
+// --- Parâmetros de Configuração ---
+const AGE_LIMIT = 5; // Idade mínima simbólica para o simulador
 const UNLOCKED_PREVIEW_CARDS = [
   {
     title: "Passageiros",
@@ -23,10 +22,6 @@ const UNLOCKED_PREVIEW_CARDS = [
   }
 ];
 
-// Feature toggles (úteis para apresentação)
-// Defina true para reativar o editor de waypoints durante debugging
-const ENABLE_WAYPOINT_EDITOR = false;
-
 const previewGrid = document.getElementById("previewGrid");
 const ageGateStatus = document.getElementById("ageGateStatus");
 let routeToolUnlocked = false; // Ferramenta desabilitada inicialmente até uma falha
@@ -36,13 +31,6 @@ const welcomeForm = document.getElementById("welcomeForm");
 const visitorNameInput = document.getElementById("visitorName");
 const welcomeMessage = document.getElementById("welcomeMessage");
 
-function injectStaticData() {
-  if (document.getElementById("personaName")) document.getElementById("personaName").textContent = PERSONA_NAME;
-  if (document.getElementById("gameName")) document.getElementById("gameName").textContent = GAME_NAME;
-  if (document.getElementById("gameReleaseYear")) document.getElementById("gameReleaseYear").textContent = String(GAME_RELEASE_YEAR);
-  if (document.getElementById("gameFocus")) document.getElementById("gameFocus").textContent = GAME_FOCUS;
-  if (document.getElementById("siteNameFooter")) document.getElementById("siteNameFooter").textContent = SITE_NAME;
-}
 
 function updateThemeButtonLabel() {
   var el = document.getElementById('themeToggle');
@@ -177,8 +165,9 @@ function checkLaunchYear() {
   if (sessionStorage.getItem('rota_launched')) return;
   const currentYear = new Date().getFullYear();
 
-  if (currentYear === GAME_RELEASE_YEAR) {
-    alert("Grande Lancamento: " + GAME_NAME + " - prototipo em nivel " + PREVIEW_LEVEL + ".");
+  // Alerta de boas-vindas para o protótipo de 2026
+  if (currentYear === 2026) {
+    alert("Grande Lancamento: Rota Certa - prototipo de otimização de logistica acadêmica.");
     sessionStorage.setItem('rota_launched', 'true');
   }
 }
@@ -194,26 +183,7 @@ const STUDENT_NAMES = {
 const ALL_STOPS = Object.keys(STUDENT_NAMES);
 const REQUIRED_STOPS = ALL_STOPS.length;
 
-function cloneStopPositions(source) {
-  return Object.keys(source).reduce(function (acc, name) {
-    acc[name] = {
-      top: source[name].top,
-      left: source[name].left
-    };
-    return acc;
-  }, {});
-}
-
-function cloneWaypointMap(source) {
-  return Object.keys(source).reduce(function (acc, legKey) {
-    acc[legKey] = (source[legKey] || []).map(function (point) {
-      return { top: point.top, left: point.left };
-    });
-    return acc;
-  }, {});
-}
-
-const DEFAULT_STOP_POSITIONS = {
+const STOP_POSITIONS = {
   'Garagem': { top: '40.1%', left: '43.9%' },
   'Faculdade': { top: '48.1%', left: '68.8%' },
   'Centro': { top: '49.5%', left: '41.8%' },
@@ -222,8 +192,12 @@ const DEFAULT_STOP_POSITIONS = {
   'Jardim America': { top: '52.8%', left: '60.6%' }
 };
 
-const STOP_POSITIONS = cloneStopPositions(DEFAULT_STOP_POSITIONS);
-
+/**
+ * GRAFO DE RUAS (Mapa Lógico)
+ * Aqui definimos quais pontos estão conectados por ruas.
+ * É a estrutura de dados que o algoritmo usa para saber que, por exemplo,
+ * para ir da Garagem para a Vila Nova, a van PRECISA passar pelo Centro.
+ */
 const ROAD_GRAPH = {
   'Garagem': ['Centro', 'Paulo Grande'],
   'Centro': ['Garagem', 'Paulo Grande', 'Vila Nova'],
@@ -252,7 +226,7 @@ const LEG_STREETS = {
   'Faculdade>Jardim America': ['st-jardim-facul']
 };
 
-const DEFAULT_LEG_WAYPOINTS = {
+const LEG_WAYPOINTS = {
   "Garagem>Centro": [
     { "top": "40.1%", "left": "43.9%" },
     { "top": "42.8%", "left": "48.4%" },
@@ -381,38 +355,16 @@ const HARD_MODE_SLEEP_MULTIPLIER = 2.0;
 const ROUTE_TOOL_FUEL_MULTIPLIER = 0.42;
 const ROUTE_TOOL_SLEEP_MULTIPLIER = 0.38;
 
-let fuelCurrent = 100;
-let sleepMeter = 0;
+// --- ESTADO INICIAL DO SIMULADOR ---
+// Estas variáveis controlam a "vida" da van durante o trajeto.
+let fuelCurrent = 100; // Nível atual de combustível
+let sleepMeter = 0;    // Nível de cansaço (0 = descansado, 100 = exausto)
 
 let selectedRoute = [];
 let gameRunning = false;
 let gameInitialized = false;
 let routeToolEnabled = false;
-let manualDrawMode = false;
-let manualRouteNodes = [];
 let _routeDrawSvg = null;
-
-// Inicializamos apos as funcoes utilitarias estarem prontas
-let LEG_WAYPOINTS = {};
-
-function initGlobalWaypoints() {
-  LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
-}
-
-const ROUTE_WAYPOINTS_KEY = 'rota-waypoints-overrides-v1';
-const routeEditorState = {
-  enabled: false,
-  editMode: 'lines',
-  activeLeg: 'Garagem>Centro',
-  draggingIndex: -1,
-  textarea: null,
-  statusEl: null,
-  legSelect: null,
-  mouseToggle: null,
-  modeSelect: null,
-  panelEl: null
-};
-
 
 function sleep(ms) {
   return new Promise(function (resolve) { setTimeout(resolve, ms); });
@@ -420,169 +372,6 @@ function sleep(ms) {
 
 function percentNumber(value) {
   return Number(String(value).replace('%', ''));
-}
-
-function normalizePercent(value) {
-  const num = Number(String(value).replace('%', '').trim());
-  if (!Number.isFinite(num)) return null;
-  return Math.min(100, Math.max(0, num));
-}
-
-
-
-function sanitizeWaypointMap(candidate) {
-  const out = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
-  Object.keys(DEFAULT_LEG_WAYPOINTS).forEach(function (legKey) {
-    const points = candidate && Array.isArray(candidate[legKey]) ? candidate[legKey] : null;
-    if (!points || !points.length) return;
-    const sanitized = points.map(function (point) {
-      if (!point || typeof point !== 'object') return null;
-      const top = normalizePercent(point.top);
-      const left = normalizePercent(point.left);
-      if (top === null || left === null) return null;
-      return { top: top.toFixed(1) + '%', left: left.toFixed(1) + '%' };
-    }).filter(Boolean);
-    if (sanitized.length) out[legKey] = sanitized;
-  });
-  return out;
-}
-
-function loadWaypointsOverrides() {
-  try {
-    const raw = window.localStorage.getItem(ROUTE_WAYPOINTS_KEY);
-    if (!raw) { LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS); return; }
-    const parsed = JSON.parse(raw);
-    LEG_WAYPOINTS = sanitizeWaypointMap(parsed);
-  } catch (err) { LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS); }
-}
-
-function persistWaypointsOverrides() {
-  window.localStorage.setItem(ROUTE_WAYPOINTS_KEY, JSON.stringify(LEG_WAYPOINTS));
-}
-
-function resetWaypointsOverrides() {
-  LEG_WAYPOINTS = cloneWaypointMap(DEFAULT_LEG_WAYPOINTS);
-  window.localStorage.removeItem(ROUTE_WAYPOINTS_KEY);
-}
-
-function setEditorStatus(text) {
-  if (routeEditorState.statusEl) routeEditorState.statusEl.textContent = text;
-}
-
-function syncEditorTextarea() {
-  if (routeEditorState.textarea) routeEditorState.textarea.value = JSON.stringify(LEG_WAYPOINTS, null, 2);
-}
-
-function getWaypointEditorLayer() {
-  const map = document.getElementById('game-map');
-  if (!map) return null;
-  let layer = document.getElementById('waypoint-editor-layer');
-  if (!layer) {
-    layer = document.createElement('div');
-    layer.id = 'waypoint-editor-layer';
-    map.appendChild(layer);
-  }
-  return layer;
-}
-
-function updateWaypointFromPointer(clientX, clientY) {
-  const map = document.getElementById('game-map');
-  const points = LEG_WAYPOINTS[routeEditorState.activeLeg];
-  const idx = routeEditorState.draggingIndex;
-  if (!map || !points || idx < 0 || idx >= points.length) return;
-  const rect = map.getBoundingClientRect();
-  if (!rect.width || !rect.height) return;
-  const leftPct = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
-  const topPct = Math.min(100, Math.max(0, ((clientY - rect.top) / rect.height) * 100));
-  points[idx] = { top: topPct.toFixed(1) + '%', left: leftPct.toFixed(1) + '%' };
-  ensureStreetSegments();
-  renderWaypointHandles();
-  syncEditorTextarea();
-}
-
-function renderWaypointHandles() {
-  const layer = getWaypointEditorLayer();
-  if (!layer) return;
-  layer.innerHTML = '';
-  if (!routeEditorState.enabled) return;
-  const points = LEG_WAYPOINTS[routeEditorState.activeLeg] || [];
-  points.forEach(function (point, index) {
-    const handle = document.createElement('button');
-    handle.type = 'button';
-    handle.className = routeEditorState.editMode === 'lines' ? 'line-endpoint-handle' : 'waypoint-handle';
-    handle.style.top = point.top;
-    handle.style.left = point.left;
-    handle.textContent = String(index + 1);
-    handle.addEventListener('pointerdown', function (event) {
-      if (gameRunning) return;
-      event.preventDefault();
-      routeEditorState.draggingIndex = index;
-      updateWaypointFromPointer(event.clientX, event.clientY);
-    });
-    layer.appendChild(handle);
-  });
-}
-
-function updateMouseEditorMode() {
-  const map = document.getElementById('game-map');
-  const canEdit = routeEditorState.panelEl && routeEditorState.panelEl.open && routeEditorState.mouseToggle && routeEditorState.mouseToggle.checked;
-  routeEditorState.enabled = !!canEdit;
-  if (!routeEditorState.enabled) routeEditorState.draggingIndex = -1;
-  if (map) map.classList.toggle('is-editing-lines', routeEditorState.enabled && routeEditorState.editMode === 'lines');
-  renderWaypointHandles();
-}
-function buildWaypointsEditorPanel() {
-  if (!ENABLE_WAYPOINT_EDITOR) return;
-  const controls = document.getElementById('game-controls');
-  if (!controls || document.getElementById('route-waypoints-editor')) return;
-  const panel = document.createElement('details');
-  panel.id = 'route-waypoints-editor';
-  panel.className = 'route-editor';
-  panel.innerHTML = [
-    '<summary class="route-editor-summary">Ajustar rotas da van (waypoints)</summary>',
-    '<p class="route-editor-help">Arraste os pontos numerados no mapa ou edite o JSON abaixo para alinhar a van na pista. Clique em Aplicar para salvar.</p>',
-    '<div class="route-editor-row"><label class="route-editor-field">Trecho</label><select id="route-waypoints-leg" class="route-editor-select"></select></div>',
-    '<div class="route-editor-row"><label class="route-editor-field">Modos</label><select id="route-waypoints-mode" class="route-editor-select"><option value="lines" selected>Mover pontas da linha</option><option value="points">Mover pontos intermediários</option></select></div>',
-    '<label class="route-editor-mouse-toggle"><input id="route-waypoints-mouse" type="checkbox" checked> Ativar edição com mouse</label>',
-    '<textarea id="route-waypoints-json" class="route-editor-textarea" spellcheck="false"></textarea>',
-    '<div class="route-editor-actions">',
-    '<button class="button button-app" id="route-waypoints-apply" type="button">Aplicar ajustes e salvar</button>',
-    '<button class="button button-ghost" id="route-waypoints-reset" type="button">Resetar padrão</button>',
-    '</div>',
-    '<p id="route-waypoints-status" class="route-editor-status"></p>'
-  ].join('');
-  controls.insertAdjacentElement('afterend', panel);
-  const textarea = document.getElementById('route-waypoints-json');
-  const legSelect = document.getElementById('route-waypoints-leg');
-  Object.keys(DEFAULT_LEG_WAYPOINTS).forEach(function (legKey) {
-    const opt = document.createElement('option'); opt.value = legKey; opt.textContent = legKey;
-    legSelect.appendChild(opt);
-  });
-  routeEditorState.textarea = textarea;
-  routeEditorState.legSelect = legSelect;
-  routeEditorState.modeSelect = document.getElementById('route-waypoints-mode');
-  routeEditorState.mouseToggle = document.getElementById('route-waypoints-mouse');
-  routeEditorState.statusEl = document.getElementById('route-waypoints-status');
-  routeEditorState.panelEl = panel;
-  legSelect.addEventListener('change', function () { routeEditorState.activeLeg = legSelect.value; renderWaypointHandles(); });
-  routeEditorState.modeSelect.addEventListener('change', function () { routeEditorState.editMode = routeEditorState.modeSelect.value; updateMouseEditorMode(); });
-  routeEditorState.mouseToggle.addEventListener('change', updateMouseEditorMode);
-  document.getElementById('route-waypoints-apply').addEventListener('click', function () {
-    try {
-      LEG_WAYPOINTS = sanitizeWaypointMap(JSON.parse(textarea.value));
-      persistWaypointsOverrides(); ensureStreetSegments(); resetGame();
-      routeEditorState.statusEl.textContent = 'Ajustes aplicados e salvos com sucesso.';
-    } catch (e) { routeEditorState.statusEl.textContent = 'JSON inválido!'; }
-  });
-  document.getElementById('route-waypoints-reset').addEventListener('click', function () {
-    resetWaypointsOverrides(); ensureStreetSegments(); resetGame();
-    textarea.value = JSON.stringify(LEG_WAYPOINTS, null, 2);
-    routeEditorState.statusEl.textContent = 'Padrao restaurado.';
-  });
-  window.addEventListener('pointermove', function (e) { if (routeEditorState.draggingIndex >= 0) updateWaypointFromPointer(e.clientX, e.clientY); });
-  window.addEventListener('pointerup', function () { if (routeEditorState.draggingIndex >= 0) { routeEditorState.draggingIndex = -1; persistWaypointsOverrides(); } });
-  syncEditorTextarea();
-  updateMouseEditorMode();
 }
 
 function vanAngle(fromPos, toPos) {
@@ -606,10 +395,15 @@ function uprightHeading(rawAngle) {
   return { angle: normalized, flip: 1 };
 }
 
+/**
+ * CÁLCULO DE VELOCIDADE (Impacto do Cansaço)
+ * Quanto maior o sleepMeter (cansaço), mais lenta a van se move.
+ * Isso simula a perda de reflexos e agilidade do motorista exausto.
+ */
 function stepDurationMs(fromPos, toPos, sleepRatio) {
   const dist = pointDistance(fromPos, toPos);
   const sr = (sleepRatio !== undefined) ? Math.min(1, sleepRatio) : 0;
-  const sleepMult = 1 + sr * 3;
+  const sleepMult = 1 + sr * 3; // O trajeto pode levar até 4x mais tempo se o motorista estiver exausto
   return Math.max(MOVE_MIN_MS, Math.min(MOVE_MAX_MS * 5, Math.round(dist * MOVE_MS_PER_UNIT * sleepMult)));
 }
 
@@ -627,21 +421,27 @@ function offsetVanPosition(pos, rawAngle) {
   const dy = Math.sin(radians) * VAN_FORWARD_OFFSET_PCT + Math.cos(radians) * VAN_SIDE_OFFSET_PCT;
   return percentPoint(percentNumber(pos.top) + dy, percentNumber(pos.left) + dx);
 }
+/**
+ * ALGORITMO DE OTIMIZAÇÃO (Problema do Caixeiro Viajante - Simplificado)
+ * Esta função testa todas as combinações de ordens de busca (permutações)
+ * para encontrar qual delas resulta na MENOR distância total.
+ * É o que permite ao app dizer: "Esta é a melhor rota para o Fábio".
+ */
 function bestOrderForPoints(stops) {
   if (stops.length === 0) return { order: [], distance: 0 };
-  const permutations = [];
+  const perms = [];
   function backtrack(curr, remaining) {
-    if (remaining.length === 0) { permutations.push(curr); return; }
+    if (remaining.length === 0) { perms.push(curr); return; }
     for (let i = 0; i < remaining.length; i++) {
       backtrack(curr.concat([remaining[i]]), remaining.slice(0, i).concat(remaining.slice(i + 1)));
     }
   }
   backtrack([], stops);
-  let best = permutations[0];
+  let best = perms[0];
   let minD = routeDistanceForOrder(best);
-  for (let i = 1; i < permutations.length; i++) {
-    let d = routeDistanceForOrder(permutations[i]);
-    if (d < minD) { minD = d; best = permutations[i]; }
+  for (let i = 1; i < perms.length; i++) {
+    let d = routeDistanceForOrder(perms[i]);
+    if (d < minD) { minD = d; best = perms[i]; }
   }
   return { order: best, distance: minD };
 }
@@ -701,19 +501,6 @@ function densifySegment(fromPos, toPos, maxStepDist) {
   }
 
   return points;
-}
-
-function densifyWaypoints(startPos, waypoints, maxStepDist) {
-  const dense = [];
-  let previous = startPos;
-
-  for (let i = 0; i < waypoints.length; i++) {
-    const next = waypoints[i];
-    dense.push.apply(dense, densifySegment(previous, next, maxStepDist));
-    previous = next;
-  }
-
-  return dense;
 }
 
 function setVanPose(van, fromPos, toPos, durationMs) {
@@ -844,6 +631,12 @@ function legDistance(from, to) {
   return total;
 }
 
+/**
+ * ALGORITMO DE DIJKSTRA (Busca de Caminho Mínimo)
+ * Este é o "cérebro" da navegação. Ele calcula o trajeto mais curto entre 
+ * dois pontos no mapa de ruas, considerando as distâncias reais.
+ * Fabio usa isso para não dar voltas desnecessárias e economizar diesel.
+ */
 function shortestPath(start, end, avoid) {
   if (start === end) return [start];
 
@@ -859,6 +652,7 @@ function shortestPath(start, end, avoid) {
   distances[start] = 0;
 
   while (queue.length) {
+    // Ordena para pegar o ponto com menor distância conhecida (Gulosidade do Dijkstra)
     queue.sort(function (a, b) { return distances[a] - distances[b]; });
     const current = queue.shift();
     if (!Number.isFinite(distances[current])) break;
@@ -1007,62 +801,6 @@ async function replayOptimalRoute() {
   startRoute();
 }
 
-/**
- * Redesenha a rota verde (SVG) usando porcentagens para garantir responsividade no mobile.
- */
-function _redrawRouteSvg() {
-  const svg = _getOrCreateRouteSvg();
-  if (!svg) return;
-  svg.innerHTML = '';
-
-  const nodes = expandRouteNodes(selectedRoute);
-  let allWaypoints = [];
-  let current = nodes[0];
-  allWaypoints.push(STOP_POSITIONS[current]);
-
-  for (let i = 1; i < nodes.length; i++) {
-    const next = nodes[i];
-    const legKey = getLegKey(current, next);
-    const waypoints = LEG_WAYPOINTS[legKey] || [STOP_POSITIONS[next]];
-    allWaypoints = allWaypoints.concat(waypoints);
-    current = next;
-  }
-
-  if (allWaypoints.length < 2) return;
-
-  const ptsStr = allWaypoints.map(function (p) {
-    return percentNumber(p.left) + ',' + percentNumber(p.top);
-  }).join(' ');
-
-  const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-  pl.setAttribute('points', ptsStr);
-  pl.setAttribute('fill', 'none');
-  pl.setAttribute('stroke', '#22c55e');
-  pl.setAttribute('stroke-width', '0.8'); // Fino em coordenadas 0-100
-  pl.setAttribute('stroke-linecap', 'round');
-  pl.setAttribute('stroke-linejoin', 'round');
-  svg.appendChild(pl);
-
-  // Bolinhas nos pontos principais
-  allWaypoints.forEach(function (p, i) {
-    const isFirst = i === 0;
-    const isLast = i === allWaypoints.length - 1;
-    // se for um ponto de parada (Stop)
-    const isStop = Object.values(STOP_POSITIONS).some(function (sp) { return sp.top === p.top && sp.left === p.left; });
-
-    if (isStop || isFirst || isLast) {
-      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circle.setAttribute('cx', percentNumber(p.left));
-      circle.setAttribute('cy', percentNumber(p.top));
-      circle.setAttribute('r', isFirst ? '1.2' : '0.8');
-      circle.setAttribute('fill', isFirst ? '#facc15' : '#22c55e');
-      circle.setAttribute('stroke', '#fff');
-      circle.setAttribute('stroke-width', '0.2');
-      svg.appendChild(circle);
-    }
-  });
-}
-
 function _getOrCreateRouteSvg() {
   const map = document.getElementById('game-map');
   if (!map) return null;
@@ -1077,19 +815,6 @@ function _getOrCreateRouteSvg() {
   }
   return svg;
 }
-
-function drawRouteManually(nodes) {
-  document.querySelectorAll('.street-seg').forEach(function (seg) {
-    seg.classList.remove('manual-route');
-  });
-
-  _redrawRouteSvg();
-
-  // Ocultamos as linhas grossas da van (street-seg) e deixamos apenas a linha SVG fina
-  // Para fins de feedback visual no editor, os segmentos ainda existem, mas não são pintados aqui.
-}
-
-
 
 function ensureAudio() {
   const Ctor = window.AudioContext || window.webkitAudioContext;
@@ -1401,7 +1126,6 @@ function resetGame() {
   selectedRoute = [];
   routeToolEnabled = false;
   gameRunning = false;
-  manualDrawMode = false;
 
   // limpa SVG de desenho (esconde, mas nao apaga pontos salvos)
   var map = document.getElementById('game-map');
@@ -1546,11 +1270,17 @@ async function startRoute() {
       for (let step = 0; step < waypoints.length && !routeAborted; step++) {
         const pos = waypoints[step];
         const stepDist = pointDistance(prevPos, pos);
-        // Penalidade de sono: quanto mais cansado, mais combustível gasta (até 50% de aumento)
+        // --- LÓGICA DE CONSUMO E EFICIÊNCIA ---
+        // Aqui simulamos o desgaste real do veículo e do motorista.
+        
+        // Penalidade de combustível: quanto mais exausto o Fábio (sleepMeter), 
+        // maior o consumo de combustível, simulando uma direção menos eficiente.
         const sleepFuelPenalty = 1 + (sleepMeter / 100) * 0.5;
         fuelCurrent -= fuelPerUnit * stepDist * sleepFuelPenalty;
+        
+        // Acúmulo de cansaço: o sono aumenta linearmente com a distância percorrida.
         sleepMeter = Math.min(100, sleepMeter + sleepPerUnit * stepDist);
-        updateHud();
+        updateHud(); // Atualiza a barra visual para o jogador
 
         if (fuelCurrent <= 0) {
           routeAborted = 'fuel';
@@ -1696,7 +1426,6 @@ function initDomGame() {
   gameInitialized = true;
 
   ensureStreetSegments();
-  if (ENABLE_WAYPOINT_EDITOR) buildWaypointsEditorPanel();
 
   resetGame();
 
@@ -1727,13 +1456,10 @@ function initDomGame() {
   document.getElementById('btn-rota-otima').addEventListener('click', applyOptimalRoute);
 }
 
-// --- Removidas ferramentas temporarias de desenho --- 
-
-
 // --- Inicializacao ---
 
 function initializePage() {
-  injectStaticData();
+  // injectStaticData(); <- Removido: agora os textos estão fixos no HTML para melhor performance
   // Atualiza o rótulo do botão de tema usando lookup dinâmico (mais resiliente)
   updateThemeButtonLabel();
 
@@ -1744,8 +1470,6 @@ function initializePage() {
   try { enableStudentTagDrag(); } catch (e) { }
 
   checkLaunchYear();
-  initGlobalWaypoints();
-  loadWaypointsOverrides();
   initDomGame();
 
   // Anexa listener ao botão de tema usando lookup dinâmico
